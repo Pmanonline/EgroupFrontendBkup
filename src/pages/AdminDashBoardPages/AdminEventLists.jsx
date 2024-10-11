@@ -1,752 +1,563 @@
-// import React, { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
-// import { Link } from "react-router-dom";
-// import { Modal, Table, Button } from "flowbite-react";
-// import { HiOutlineExclamationCircle } from "react-icons/hi";
-// import { toast } from "react-toastify";
-// import { CircularProgress } from "@mui/material";
-// import Snackbar from "@mui/material/Snackbar";
-// import MuiAlert from "@mui/material/Alert";
-// import { IoArrowBack } from "react-icons/io5";
-// import Dialog from "@mui/material/Dialog";
-// import DialogActions from "@mui/material/DialogActions";
-// import DialogContent from "@mui/material/DialogContent";
-// import DialogContentText from "@mui/material/DialogContentText";
-// import DialogTitle from "@mui/material/DialogTitle";
-// import { IoClose } from "react-icons/io5";
-// import { AiTwotoneDelete } from "react-icons/ai";
+// import React, { useState, useEffect } from "react";
 // import { BiMessageSquareAdd } from "react-icons/bi";
-// const backendURL = import.meta.env.VITE_BACKEND_URL;
+// import { Link } from "react-router-dom";
+// import axios from "axios";
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableContainer,
+//   TableHead,
+//   TableRow,
+//   Paper,
+//   Button,
+//   Typography,
+//   Box,
+//   Tab,
+//   Tabs,
+// } from "@mui/material";
 
-// export default function AdminEventLists() {
-//   const { userInfo } = useSelector((state) => state.auth);
-//   const [userPosts, setUserPosts] = useState([]);
-//   const [showMore, setShowMore] = useState(true);
-//   const [showModal, setShowModal] = useState(false);
-//   const [postIdToDelete, setPostIdToDelete] = useState("");
-//   const [Deleteopen, setDeleteOpen] = useState(false);
-//   const DeleteOpen = () => setDeleteOpen(true);
-//   const [snackbar, setSnackbar] = useState({
-//     open: false,
-//     message: "",
-//     severity: "info",
-//   });
+// const backendURL =
+//   import.meta.env.MODE === "production"
+//     ? import.meta.env.VITE_BACKEND_URL
+//     : "http://localhost:3001";
 
-//   const handleSnackbarClose = (event, reason) => {
-//     if (reason === "clickaway") {
-//       return;
-//     }
-//     setSnackbar({ ...snackbar, open: false });
-//   };
-
-//   const showSnackbar = (message, severity) => {
-//     setSnackbar({
-//       open: true,
-//       message,
-//       severity,
-//     });
-//   };
-
-//   // Function to close modal
-//   const DeleteClose = () => setDeleteOpen(false);
+// const AdminEventLists = () => {
+//   const [groups, setGroups] = useState([]);
+//   const [discussions, setDiscussions] = useState([]);
+//   const [comments, setComments] = useState([]);
+//   const [selectedGroup, setSelectedGroup] = useState(null);
+//   const [selectedDiscussion, setSelectedDiscussion] = useState(null);
+//   const [tabValue, setTabValue] = useState(0);
 
 //   useEffect(() => {
-//     fetchPosts();
-//   }, [userInfo]);
+//     fetchGroups();
+//     fetchAllDiscussions();
+//   }, []);
 
-//   const fetchPosts = async (startIndex = 0) => {
+//   const fetchGroups = async () => {
 //     try {
-//       const res = await fetch(
-//         `${backendURL}/api/getPosts?startIndex=${startIndex}&limit=9`
-//       );
-//       const data = await res.json();
-//       if (res.ok) {
-//         if (startIndex === 0) {
-//           setUserPosts(data.posts);
-//         } else {
-//           setUserPosts((prev) => [...prev, ...data.posts]);
-//         }
-//         setShowMore(data.posts.length === 9);
-//       }
+//       const response = await axios.get(`${backendURL}/api/groups/getAllGroups`);
+//       setGroups(response.data);
 //     } catch (error) {
-//       console.error("Error fetching posts:", error);
-//       showSnackbar("Failed to fetch posts", "error");
+//       console.error("Error fetching groups:", error);
 //     }
 //   };
 
-//   const handleShowMore = () => {
-//     const startIndex = userPosts.length;
-//     fetchPosts(startIndex);
-//   };
-
-//   const handleDeletePost = async () => {
-//     setShowModal(false);
+//   const fetchAllDiscussions = async () => {
 //     try {
-//       const res = await fetch(
-//         `${backendURL}/api/deletePost/${postIdToDelete}`,
-//         {
-//           method: "DELETE",
-//         }
+//       const response = await axios.get(
+//         `${backendURL}/api/discussions/getAllDiscussions`
 //       );
-//       const data = await res.json();
-//       if (res.ok) {
-//         setUserPosts((prev) =>
-//           prev.filter((post) => post._id !== postIdToDelete)
-//         );
-//         showSnackbar("Post deleted successfully", "success");
-//         DeleteClose();
-//       } else {
-//         showSnackbar(data.message || "Failed to delete post", "error");
-//       }
+//       setDiscussions(response.data);
 //     } catch (error) {
-//       console.error("Error deleting post:", error);
-//       showSnackbar("An error occurred while deleting the post", "error");
+//       console.error("Error fetching discussions:", error);
 //     }
 //   };
-//   const Alert = React.forwardRef(function Alert(props, ref) {
-//     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-//   });
-//   return (
-//     <>
-//       <Link to="/DashBoard/Admin/CreateEvents">
-//         <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-[20%] mid:w-[30%]  py-2 text-center transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-3  mb-7">
-//           <span className="flex  whitespace-nowrap">
-//             <BiMessageSquareAdd className="mr-2" size={20} />
-//             Create Events
-//           </span>
-//         </button>
-//       </Link>
-//       <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-//         {userPosts.length > 0 ? (
-//           <>
-//             <Table hoverable className="shadow-md">
-//               <Table.Head>
-//                 <Table.HeadCell>Event type</Table.HeadCell>
-//                 <Table.HeadCell> Image</Table.HeadCell>
-//                 <Table.HeadCell>Title</Table.HeadCell>
-//                 <Table.HeadCell>Category</Table.HeadCell>
-//                 <Table.HeadCell>Date</Table.HeadCell>
-//                 <Table.HeadCell>Venue</Table.HeadCell>
-//                 <Table.HeadCell>Delete</Table.HeadCell>
-//                 <Table.HeadCell>Edit</Table.HeadCell>
-//               </Table.Head>
-//               <Table.Body className="divide-y">
-//                 {userPosts.map((post) => (
-//                   <Table.Row
-//                     key={post._id}
-//                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
-//                   >
-//                     <Table.Cell>
-//                       {new Date(post.updatedAt).toLocaleDateString()}
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       <Link to={`/post/${post.slug}`}>
-//                         <img
-//                           src={`${backendURL}${post.image}`}
-//                           alt={post.title}
-//                           className="w-20 h-20 object-cover bg-gray-500 rounded-full"
-//                         />
-//                       </Link>
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       <Link
-//                         className="font-medium text-gray-900 dark:text-white"
-//                         to={`/post/${post.slug}`}
-//                       >
-//                         {post.title}
-//                       </Link>
-//                     </Table.Cell>
-//                     <Table.Cell>{post.category}</Table.Cell>
-//                     <Table.Cell>
-//                       <span
-//                         onClick={() => {
-//                           // setShowModal(true);
-//                           DeleteOpen();
-//                           setPostIdToDelete(post._id);
-//                         }}
-//                         className="font-medium text-red-500 hover:underline cursor-pointer"
-//                       >
-//                         Delete
-//                       </span>
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       <Link
-//                         className="text-teal-500 hover:underline"
-//                         to={`/DashBoard/Admin/CreatePosts/${post._id}`}
-//                       >
-//                         <span>Edit</span>
-//                       </Link>
-//                     </Table.Cell>
-//                   </Table.Row>
-//                 ))}
-//               </Table.Body>
-//             </Table>
-//             {showMore && (
-//               <button
-//                 onClick={handleShowMore}
-//                 className="w-full text-teal-500 self-center text-sm py-7"
-//               >
-//                 Show more
-//               </button>
-//             )}
-//           </>
-//         ) : (
-//           <p>You have no posts yet!</p>
-//         )}
+//   console.log(discussions);
 
-//         {/* DELETING MODAL Starts HERE */}
-//         <Button>
-//           <React.Fragment>
-//             <Dialog
-//               open={Deleteopen}
-//               onClose={DeleteClose}
-//               aria-labelledby="alert-dialog-title"
-//               aria-describedby="alert-dialog-description"
-//             >
-//               <DialogTitle id="alert-dialog-title">
-//                 Are you sure you want to delete your account?
-//               </DialogTitle>
-//               <DialogContent>
-//                 <DialogContentText id="alert-dialog-description">
-//                   Confirm delete or cancel
-//                 </DialogContentText>
-//               </DialogContent>
-//               <DialogActions>
-//                 <Button onClick={DeleteClose}>
-//                   <IoClose
-//                     size={24}
-//                     className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-//                   />
-//                 </Button>
-//                 <Button onClick={handleDeletePost}>
-//                   <AiTwotoneDelete
-//                     size={24}
-//                     className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-//                   />
-//                 </Button>
-//               </DialogActions>
-//             </Dialog>
-//           </React.Fragment>
-//         </Button>
-//         {/* DELETING MODAL Ends HERE */}
-//       </div>
-//       <Snackbar
-//         open={snackbar.open}
-//         autoHideDuration={6000}
-//         onClose={handleSnackbarClose}
-//         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-//       >
-//         <Alert
-//           onClose={handleSnackbarClose}
-//           severity={snackbar.severity}
-//           sx={{ width: "100%" }}
-//         >
-//           {snackbar.message}
-//         </Alert>
-//       </Snackbar>
-//     </>
-//   );
-// }
-
-// import React, { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
-// import { Link } from "react-router-dom";
-// import { Modal, Table, Button } from "flowbite-react";
-// import { HiOutlineExclamationCircle } from "react-icons/hi";
-// import { toast } from "react-toastify";
-// import { CircularProgress } from "@mui/material";
-// import Snackbar from "@mui/material/Snackbar";
-// import MuiAlert from "@mui/material/Alert";
-// import { IoArrowBack } from "react-icons/io5";
-// import Dialog from "@mui/material/Dialog";
-// import DialogActions from "@mui/material/DialogActions";
-// import DialogContent from "@mui/material/DialogContent";
-// import DialogContentText from "@mui/material/DialogContentText";
-// import DialogTitle from "@mui/material/DialogTitle";
-// import { IoClose } from "react-icons/io5";
-// import { AiTwotoneDelete } from "react-icons/ai";
-// import { BiMessageSquareAdd } from "react-icons/bi";
-// import { format } from "date-fns";
-
-// const backendURL = import.meta.env.VITE_BACKEND_URL;
-
-// export default function AdminEventLists() {
-//   const { userInfo } = useSelector((state) => state.auth);
-//   const [events, setEvents] = useState([]);
-//   const [showMore, setShowMore] = useState(true);
-//   const [showModal, setShowModal] = useState(false);
-//   const [eventIdToDelete, setEventIdToDelete] = useState("");
-//   const [deleteOpen, setDeleteOpen] = useState(false);
-//   const [snackbar, setSnackbar] = useState({
-//     open: false,
-//     message: "",
-//     severity: "info",
-//   });
-
-//   const handleSnackbarClose = (event, reason) => {
-//     if (reason === "clickaway") {
-//       return;
-//     }
-//     setSnackbar({ ...snackbar, open: false });
-//   };
-
-//   const showSnackbar = (message, severity) => {
-//     setSnackbar({
-//       open: true,
-//       message,
-//       severity,
-//     });
-//   };
-
-//   const deleteOpen = () => setDeleteOpen(true);
-//   const deleteClose = () => setDeleteOpen(false);
-
-//   useEffect(() => {
-//     fetchEvents();
-//   }, [userInfo]);
-
-//   const fetchEvents = async (startIndex = 0) => {
+//   const fetchDiscussionsByGroup = async (groupSlug) => {
 //     try {
-//       const res = await fetch(
-//         `${backendURL}/api/getEvents?startIndex=${startIndex}&limit=9`
+//       const response = await axios.get(
+//         `${backendURL}/api/groups/${groupSlug}/discussions`
 //       );
-//       const data = await res.json();
-//       if (res.ok) {
-//         if (startIndex === 0) {
-//           setEvents(data.events);
-//         } else {
-//           setEvents((prev) => [...prev, ...data.events]);
-//         }
-//         setShowMore(data.events.length === 9);
-//       }
+//       setDiscussions(response.data);
 //     } catch (error) {
-//       console.error("Error fetching events:", error);
-//       showSnackbar("Failed to fetch events", "error");
+//       console.error("Error fetching discussions by group:", error);
 //     }
 //   };
 
-//   const handleShowMore = () => {
-//     const startIndex = events.length;
-//     fetchEvents(startIndex);
-//   };
-
-//   const handleDeleteEvent = async () => {
-//     setShowModal(false);
+//   const fetchComments = async (discussionId) => {
 //     try {
-//       const res = await fetch(
-//         `${backendURL}/api/deleteEvent/${eventIdToDelete}`,
-//         {
-//           method: "DELETE",
-//         }
+//       const response = await axios.get(
+//         `${backendURL}/api/discussions/getDiscussionComments/${discussionId}`
 //       );
-//       const data = await res.json();
-//       if (res.ok) {
-//         setEvents((prev) =>
-//           prev.filter((event) => event._id !== eventIdToDelete)
-//         );
-//         showSnackbar("Event deleted successfully", "success");
-//         deleteClose();
-//       } else {
-//         showSnackbar(data.message || "Failed to delete event", "error");
-//       }
+//       setComments(response.data.comments);
 //     } catch (error) {
-//       console.error("Error deleting event:", error);
-//       showSnackbar("An error occurred while deleting the event", "error");
+//       console.error("Error fetching comments:", error);
 //     }
 //   };
 
-//   const Alert = React.forwardRef(function Alert(props, ref) {
-//     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-//   });
+//   const handleDeleteDiscussion = async (discussionId) => {
+//     try {
+//       await axios.delete(`${backendURL}/api/discussions/${discussionId}`);
+//       setDiscussions(discussions.filter((d) => d._id !== discussionId));
+//     } catch (error) {
+//       console.error("Error deleting discussion:", error);
+//     }
+//   };
+
+//   const handleDeleteComment = async (discussionId, commentId) => {
+//     try {
+//       await axios.delete(
+//         `${backendURL}/api/discussions/${discussionId}/comments/${commentId}/delete`
+//       );
+//       setComments(comments.filter((c) => c._id !== commentId));
+//     } catch (error) {
+//       console.error("Error deleting comment:", error);
+//     }
+//   };
+
+//   const handleTabChange = (event, newValue) => {
+//     setTabValue(newValue);
+//   };
 
 //   return (
 //     <>
-//       <Link to="/DashBoard/Admin/CreateEvents">
+//       <Link to="/DashBoard/Admin/CreateGroup">
 //         <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-[20%] mid:w-[30%] py-2 text-center transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-3 mb-7">
 //           <span className="flex whitespace-nowrap">
 //             <BiMessageSquareAdd className="mr-2" size={20} />
-//             Create Events
+//             Create Group
 //           </span>
 //         </button>
 //       </Link>
-//       <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-//         {events.length > 0 ? (
-//           <>
-//             <Table hoverable className="shadow-md">
-//               <Table.Head>
-//                 <Table.HeadCell>Image</Table.HeadCell>
-//                 <Table.HeadCell>Title</Table.HeadCell>
-//                 <Table.HeadCell>Date</Table.HeadCell>
-//                 <Table.HeadCell>Venue</Table.HeadCell>
-//                 <Table.HeadCell>Event Type</Table.HeadCell>
-//                 <Table.HeadCell>Speakers</Table.HeadCell>
-//                 <Table.HeadCell>Delete</Table.HeadCell>
-//                 <Table.HeadCell>Edit</Table.HeadCell>
-//               </Table.Head>
-//               <Table.Body className="divide-y">
-//                 {events.map((event) => (
-//                   <Table.Row
-//                     key={event._id}
-//                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
-//                   >
-//                     <Table.Cell>
-//                       <img
-//                         src={`${backendURL}${event.image}`}
-//                         alt={event.title}
-//                         className="w-20 h-20 object-cover bg-gray-500 rounded-full"
-//                       />
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       <span className="font-medium text-gray-900 dark:text-white">
-//                         {event.title}
-//                       </span>
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       {format(
-//                         new Date(event.date),
-//                         "EEE, MMM d • h:mm a 'GMT'xxx"
-//                       )}
-//                     </Table.Cell>
-//                     <Table.Cell>{event.venue}</Table.Cell>
-//                     <Table.Cell>{event.eventType}</Table.Cell>
-//                     <Table.Cell>{event.speakers.join(", ")}</Table.Cell>
-//                     <Table.Cell>
-//                       <span
-//                         onClick={() => {
-//                           deleteOpen();
-//                           setEventIdToDelete(event._id);
+//       <Box sx={{ width: "100%" }}>
+//         <Tabs value={tabValue} onChange={handleTabChange}>
+//           <Tab label="Groups" />
+//           <Tab label="Discussions" />
+//           <Tab label="Comments" />
+//         </Tabs>
+
+//         {tabValue === 0 && (
+//           <TableContainer component={Paper}>
+//             <Table>
+//               <TableHead>
+//                 <TableRow>
+//                   <TableCell>Name</TableCell>
+//                   <TableCell>Description</TableCell>
+//                   <TableCell>Members</TableCell>
+//                   <TableCell>Actions</TableCell>
+//                 </TableRow>
+//               </TableHead>
+//               <TableBody>
+//                 {groups.map((group) => (
+//                   <TableRow key={group._id}>
+//                     <TableCell>{group.name}</TableCell>
+//                     <TableCell>
+//                       <div
+//                         dangerouslySetInnerHTML={{
+//                           __html: group.description,
 //                         }}
-//                         className="font-medium text-red-500 hover:underline cursor-pointer"
+//                       />
+//                     </TableCell>
+
+//                     <TableCell>{group.members.length}</TableCell>
+//                     <TableCell>
+//                       <Button
+//                         onClick={() => {
+//                           setSelectedGroup(group);
+//                           fetchDiscussionsByGroup(group.slug);
+//                           setTabValue(1);
+//                         }}
 //                       >
-//                         Delete
-//                       </span>
-//                     </Table.Cell>
-//                     <Table.Cell>
-//                       <Link
-//                         className="text-teal-500 hover:underline"
-//                         to={`/DashBoard/Admin/CreateEvents/${event._id}`}
-//                       >
-//                         <span>Edit</span>
-//                       </Link>
-//                     </Table.Cell>
-//                   </Table.Row>
+//                         View Discussions
+//                       </Button>
+//                     </TableCell>
+//                   </TableRow>
 //                 ))}
-//               </Table.Body>
+//               </TableBody>
 //             </Table>
-//             {showMore && (
-//               <button
-//                 onClick={handleShowMore}
-//                 className="w-full text-teal-500 self-center text-sm py-7"
-//               >
-//                 Show more
-//               </button>
-//             )}
-//           </>
-//         ) : (
-//           <p>You have no events yet!</p>
+//           </TableContainer>
 //         )}
 
-//         <Dialog
-//           open={deleteOpen}
-//           onClose={deleteClose}
-//           aria-labelledby="alert-dialog-title"
-//           aria-describedby="alert-dialog-description"
-//         >
-//           <DialogTitle id="alert-dialog-title">
-//             Are you sure you want to delete this event?
-//           </DialogTitle>
-//           <DialogContent>
-//             <DialogContentText id="alert-dialog-description">
-//               Confirm delete or cancel
-//             </DialogContentText>
-//           </DialogContent>
-//           <DialogActions>
-//             <Button onClick={deleteClose}>
-//               <IoClose
-//                 size={24}
-//                 className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-//               />
-//             </Button>
-//             <Button onClick={handleDeleteEvent}>
-//               <AiTwotoneDelete
-//                 size={24}
-//                 className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-//               />
-//             </Button>
-//           </DialogActions>
-//         </Dialog>
-//       </div>
-//       <Snackbar
-//         open={snackbar.open}
-//         autoHideDuration={6000}
-//         onClose={handleSnackbarClose}
-//         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-//       >
-//         <Alert
-//           onClose={handleSnackbarClose}
-//           severity={snackbar.severity}
-//           sx={{ width: "100%" }}
-//         >
-//           {snackbar.message}
-//         </Alert>
-//       </Snackbar>
+//         {tabValue === 1 && (
+//           <TableContainer component={Paper}>
+//             <Table>
+//               <TableHead>
+//                 <TableRow>
+//                   <TableCell>Title</TableCell>
+//                   <TableCell>Author</TableCell>
+//                   <TableCell>Group</TableCell>
+//                   <TableCell>Actions</TableCell>
+//                 </TableRow>
+//               </TableHead>
+//               <TableBody>
+//                 {discussions.map((discussion) => (
+//                   <TableRow key={discussion._id}>
+//                     <TableCell>{discussion.title}</TableCell>
+//                     <TableCell>{discussion.author.username}</TableCell>
+//                     <TableCell>{discussion.group.name}</TableCell>
+//                     <TableCell>
+//                       <Button
+//                         onClick={() => {
+//                           setSelectedDiscussion(discussion);
+//                           fetchComments(discussion._id);
+//                           setTabValue(2);
+//                         }}
+//                       >
+//                         View Comments
+//                       </Button>
+//                       <Button
+//                         onClick={() => handleDeleteDiscussion(discussion._id)}
+//                       >
+//                         Delete
+//                       </Button>
+//                     </TableCell>
+//                   </TableRow>
+//                 ))}
+//               </TableBody>
+//             </Table>
+//           </TableContainer>
+//         )}
+
+//         {tabValue === 2 && (
+//           <TableContainer component={Paper}>
+//             <Table>
+//               <TableHead>
+//                 <TableRow>
+//                   <TableCell>Content</TableCell>
+//                   <TableCell>Author</TableCell>
+//                   <TableCell>Actions</TableCell>
+//                 </TableRow>
+//               </TableHead>
+//               <TableBody>
+//                 {comments.map((comment) => (
+//                   <TableRow key={comment._id}>
+//                     <TableCell>{comment.content}</TableCell>
+//                     <TableCell>{comment.author.username}</TableCell>
+//                     <TableCell>
+//                       <Button
+//                         onClick={() =>
+//                           handleDeleteComment(
+//                             selectedDiscussion._id,
+//                             comment._id
+//                           )
+//                         }
+//                       >
+//                         Delete
+//                       </Button>
+//                     </TableCell>
+//                   </TableRow>
+//                 ))}
+//               </TableBody>
+//             </Table>
+//           </TableContainer>
+//         )}
+//       </Box>
 //     </>
 //   );
-// }
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { Modal, Table, Button } from "flowbite-react";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-import { IoArrowBack } from "react-icons/io5";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { IoClose } from "react-icons/io5";
-import { AiTwotoneDelete } from "react-icons/ai";
+// };
+
+// export default AdminEventLists;\
+
+import React, { useState, useEffect } from "react";
 import { BiMessageSquareAdd } from "react-icons/bi";
-import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  Box,
+  Tab,
+  Tabs,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+const backendURL =
+  import.meta.env.MODE === "production"
+    ? import.meta.env.VITE_BACKEND_URL
+    : "http://localhost:3001";
 
-export default function AdminEventLists() {
+const AdminEventLists = () => {
+  const [groups, setGroups] = useState([]);
+  const [discussions, setDiscussions] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedDiscussion, setSelectedDiscussion] = useState(null);
+  const [tabValue, setTabValue] = useState(0);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [deleteType, setDeleteType] = useState("");
+
+  const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
-  const [events, setEvents] = useState([]);
-  const [showMore, setShowMore] = useState(true);
-  const [eventIdToDelete, setEventIdToDelete] = useState("");
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "info",
-  });
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setSnackbar({ ...snackbar, open: false });
-  };
-
-  const showSnackbar = (message, severity) => {
-    setSnackbar({
-      open: true,
-      message,
-      severity,
-    });
-  };
-
-  const handleDeleteOpen = () => setDeleteOpen(true);
-  const handleDeleteClose = () => setDeleteOpen(false);
+  const userId = userInfo?.user?._id;
 
   useEffect(() => {
-    fetchEvents();
-  }, [userInfo]);
+    fetchGroups();
+    fetchAllDiscussions();
+  }, []);
 
-  const fetchEvents = async (startIndex = 0) => {
+  const fetchGroups = async () => {
     try {
-      const res = await fetch(
-        `${backendURL}/api/getEvents?startIndex=${startIndex}&limit=9`
-      );
-      const data = await res.json();
-      if (res.ok) {
-        if (startIndex === 0) {
-          setEvents(data.events);
-        } else {
-          setEvents((prev) => [...prev, ...data.events]);
-        }
-        setShowMore(data.events.length === 9);
-      }
+      const response = await axios.get(`${backendURL}/api/groups/getAllGroups`);
+      setGroups(response.data);
     } catch (error) {
-      console.error("Error fetching events:", error);
-      showSnackbar("Failed to fetch events", "error");
+      console.error("Error fetching groups:", error);
     }
   };
 
-  const handleShowMore = () => {
-    const startIndex = events.length;
-    fetchEvents(startIndex);
+  const fetchAllDiscussions = async () => {
+    try {
+      const response = await axios.get(
+        `${backendURL}/api/discussions/getAllDiscussions`
+      );
+      setDiscussions(response.data);
+    } catch (error) {
+      console.error("Error fetching discussions:", error);
+    }
   };
 
-  const handleDeleteEvent = async () => {
+  const fetchDiscussionsByGroup = async (groupSlug) => {
     try {
-      const res = await fetch(
-        `${backendURL}/api/deleteEvent/${eventIdToDelete}`,
+      const response = await axios.get(
+        `${backendURL}/api/groups/${groupSlug}/discussions`
+      );
+      setDiscussions(response.data);
+    } catch (error) {
+      console.error("Error fetching discussions by group:", error);
+    }
+  };
+
+  const fetchComments = async (discussionId) => {
+    try {
+      const response = await axios.get(
+        `${backendURL}/api/discussions/getDiscussionComments/${discussionId}`
+      );
+      setComments(response.data.comments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const handleDeleteGroup = async (groupId) => {
+    try {
+      await axios.delete(`${backendURL}/api/groups/deleteGroup/${groupId}`);
+      console.log(groupId);
+      setGroups(groups.filter((g) => g._id !== groupId));
+    } catch (error) {
+      console.error("Error deleting group:", error);
+    }
+  };
+
+  const handleDeleteDiscussion = async (discussionId) => {
+    try {
+      await axios.delete(
+        `${backendURL}/api/groups/deleteDiscussion/${discussionId}`
+      );
+      setDiscussions(discussions.filter((d) => d._id !== discussionId));
+    } catch (error) {
+      console.error("Error deleting discussion:", error);
+    }
+  };
+
+  const handleDeleteComment = async (discussionId, commentId) => {
+    try {
+      await axios.delete(
+        `${backendURL}/api/discussions/${discussionId}/comments/${commentId}/delete`,
         {
-          method: "DELETE",
+          data: { userId },
         }
       );
-      const data = await res.json();
-      if (res.ok) {
-        setEvents((prev) =>
-          prev.filter((event) => event._id !== eventIdToDelete)
-        );
-        showSnackbar("Event deleted successfully", "success");
-        handleDeleteClose();
-      } else {
-        showSnackbar(data.message || "Failed to delete event", "error");
-      }
+      setComments(comments.filter((c) => c._id !== commentId));
     } catch (error) {
-      console.error("Error deleting event:", error);
-      showSnackbar("An error occurred while deleting the event", "error");
+      console.error("Error deleting comment:", error);
     }
   };
 
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const handleOpenDeleteDialog = (item, type) => {
+    setItemToDelete(item);
+    setDeleteType(type);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setItemToDelete(null);
+    setDeleteType("");
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteType === "group") {
+      await handleDeleteGroup(itemToDelete._id);
+    } else if (deleteType === "discussion") {
+      await handleDeleteDiscussion(itemToDelete._id);
+    } else if (deleteType === "comment") {
+      await handleDeleteComment(selectedDiscussion._id, itemToDelete._id);
+    }
+    handleCloseDeleteDialog();
+  };
 
   return (
     <>
-      <Link to="/DashBoard/Admin/CreateEvents">
+      <Link to="/DashBoard/Admin/CreateGroup">
         <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-[20%] mid:w-[30%] py-2 text-center transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center mx-3 mb-7">
           <span className="flex whitespace-nowrap">
             <BiMessageSquareAdd className="mr-2" size={20} />
-            Create Events
+            Create Group
           </span>
         </button>
       </Link>
-      <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-        {events.length > 0 ? (
-          <>
-            <Table hoverable className="shadow-md">
-              <Table.Head>
-                <Table.HeadCell>Image</Table.HeadCell>
-                <Table.HeadCell>Title</Table.HeadCell>
-                <Table.HeadCell>Date</Table.HeadCell>
-                <Table.HeadCell>Venue</Table.HeadCell>
-                <Table.HeadCell>Event Type</Table.HeadCell>
-                <Table.HeadCell>Speakers</Table.HeadCell>
-                <Table.HeadCell>Delete</Table.HeadCell>
-                <Table.HeadCell>Edit</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {events.map((event) => (
-                  <Table.Row
-                    key={event._id}
-                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                  >
-                    <Table.Cell>
-                      <div className="w-[3rem] h-[3rem] overflow-hidden rounded-full flex items-center justify-center bg-gray-500">
-                        <img
-                          src={`${backendURL}${event.image}`}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </Table.Cell>
+      <Box sx={{ width: "100%" }}>
+        <Tabs value={tabValue} onChange={handleTabChange}>
+          <Tab label="Groups" />
+          <Tab label="Discussions" />
+          <Tab label="Comments" />
+        </Tabs>
 
-                    <Table.Cell>
-                      <Link to={`/event/${event.slug}`}>
-                        <span className="font-medium text-gray-900 text-xs">
-                          {event.title}
-                        </span>
-                      </Link>
-                    </Table.Cell>
-                    <Table.Cell>
-                      {format(
-                        new Date(event.date),
-                        "EEE, MMM d • h:mm a 'GMT'xxx"
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>{event.venue.slice(0, 20)}</Table.Cell>
-
-                    <Table.Cell>{event.eventType}</Table.Cell>
-                    <Table.Cell>
-                      {event.speakers.map((speaker, index) => (
-                        <span key={index}>
-                          {speaker.name.slice(0, 20)}
-                          {index < event.speakers.length - 1 && ", "}
-                        </span>
-                      ))}
-                    </Table.Cell>
-
-                    <Table.Cell>
-                      <span
-                        onClick={() => {
-                          handleDeleteOpen();
-                          setEventIdToDelete(event._id);
+        {tabValue === 0 && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Members</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {groups.map((group) => (
+                  <TableRow key={group._id}>
+                    <TableCell>{group.name}</TableCell>
+                    <TableCell>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: group.description,
                         }}
-                        className="font-medium text-red-500 hover:underline cursor-pointer"
+                      />
+                    </TableCell>
+                    <TableCell>{group.members.length}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          setSelectedGroup(group);
+                          fetchDiscussionsByGroup(group.slug);
+                          setTabValue(1);
+                        }}
+                      >
+                        View Discussions
+                      </Button>
+                      <Button
+                        onClick={() => handleOpenDeleteDialog(group, "group")}
+                        color="error"
                       >
                         Delete
-                      </span>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Link
-                        className="text-teal-500 hover:underline"
-                        to={`/DashBoard/Admin/CreateEvents/${event._id}`}
-                      >
-                        <span>Edit</span>
-                      </Link>
-                    </Table.Cell>
-                  </Table.Row>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </Table.Body>
+              </TableBody>
             </Table>
-            {showMore && (
-              <button
-                onClick={handleShowMore}
-                className="w-full text-teal-500 self-center text-sm py-7"
-              >
-                Show more
-              </button>
-            )}
-          </>
-        ) : (
-          <p>You have no events yet!</p>
+          </TableContainer>
         )}
 
-        <Dialog
-          open={deleteOpen}
-          onClose={handleDeleteClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Are you sure you want to delete this event?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Confirm delete or cancel
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDeleteClose}>
-              <IoClose
-                size={24}
-                className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-              />
-            </Button>
-            <Button onClick={handleDeleteEvent}>
-              <AiTwotoneDelete
-                size={24}
-                className="text-red-500 border-red-500 rounded-sm transition ease-in-out duration-200 transform hover:scale-125 hover:text-red-600"
-              />
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        {tabValue === 1 && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Author</TableCell>
+                  <TableCell>Group</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {discussions.map((discussion) => (
+                  <TableRow key={discussion._id}>
+                    <TableCell>{discussion.title}</TableCell>
+                    <TableCell>{discussion.author.username}</TableCell>
+                    <TableCell>{discussion.group.name}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          setSelectedDiscussion(discussion);
+                          fetchComments(discussion._id);
+                          setTabValue(2);
+                        }}
+                      >
+                        View Comments
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          handleOpenDeleteDialog(discussion, "discussion")
+                        }
+                        color="error"
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {tabValue === 2 && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Content</TableCell>
+                  <TableCell>Author</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {comments.map((comment) => (
+                  <TableRow key={comment._id}>
+                    <TableCell>{comment.content}</TableCell>
+                    <TableCell>{comment.author.username}</TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() =>
+                          handleOpenDeleteDialog(comment, "comment")
+                        }
+                        color="error"
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Box>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this {deleteType}? This action
+            cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
-}
+};
+
+export default AdminEventLists;

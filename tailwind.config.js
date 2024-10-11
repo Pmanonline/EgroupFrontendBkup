@@ -17,9 +17,9 @@ module.exports = {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        NavClr: "#f2fff2",
-        green: "#00D121",
-        greenDark: "#13A52A",
+        NavClr: "#E10A0A",
+        green: "#046413",
+        HeroClr: "#5D4D4D",
         white: "#ffffff",
         lightash: "#838282",
         midnightash: "#323131",
@@ -42,17 +42,14 @@ module.exports = {
         "2xl": "1536px",
         // // => @media (min-width: 1536px) { ... }
         mod: { max: "639px" },
-        expcard: { max: "1066px" },
-        minilg: { max: "899px" },
+        navLogo: { max: "1080px" },
+        minilg: { min: "850px" },
         mid: { max: "767px" },
         Nlg: { max: "1023px" },
         // => @media (min-width: 0px and max-width: 639px) { ... }
       },
-
       fontFamily: {
-        montserrat: ["Montserrat", "sans-serif"],
-        "montserrat-subrayada": ["Montserrat Subrayada", "sans-serif"],
-        // Defined Montserrat and Montserrat Subrayada fonts
+        montserrat: ["Montserrat Subrayada", "sans-serif"], // Ensure correct naming
       },
     },
   },

@@ -90,6 +90,7 @@ export const RelatedPosts = ({ category, currentPostId }) => {
           throw new Error("Failed to fetch related posts");
         }
         const data = await response.json();
+        console.log(data, "related posts");
         setRelatedPosts(data);
         console.log(data, relatedPosts);
       } catch (error) {
@@ -107,45 +108,51 @@ export const RelatedPosts = ({ category, currentPostId }) => {
   };
 
   return (
-    <Box sx={{ mt: 2, width: "100%" }}>
+    <Box
+      sx={{
+        mt: 0,
+        width: "100%",
+        p: { xs: 2, sm: 3, md: 4 },
+        mx: "auto",
+      }}
+    >
       <Typography variant="h6" gutterBottom>
         Related Posts
       </Typography>
+
       {relatedPosts.map((post) => (
         <Card
           key={post._id}
           className="
-    flex flex-col mb-3 mx-auto cursor-pointer 
-    shadow-md hover:shadow-lg 
-    min-w-ful   minilg:max-w-[25rem] minilg:mb-10 container"
+        flex flex-col 
+        cursor-pointer shadow-md hover:shadow-lg 
+        mb-5 mx-auto  // Center the card and provide margin at the bottom
+        w-full Nlg:max-w-[20rem]
+        sm:max-w-[20rem] md:max-w-[24rem] lg:max-w-[25rem]  
+        "
           onClick={() => handlePostClick(post.slug)}
         >
-          {/* Card content goes here */}
-
+          {/* Card Media (Image) */}
           {post.image && (
             <CardMedia
               component="img"
-              sx={{ width: "100%", height: 200, objectFit: "cover" }}
+              sx={{
+                width: "100%",
+                height: { xs: 150, sm: 200 }, // Adjusts image height for different screen sizes
+                objectFit: "cover",
+              }}
               image={`${backendURL}${post.image}`}
               alt={post.title}
             />
           )}
-          <CardContent sx={{ flexGrow: 1, p: 1 }}>
+
+          {/* Card Content */}
+          <CardContent sx={{ flexGrow: 1, p: { xs: 1, sm: 2 } }}>
             {" "}
-            {/* Increased padding */}
+            {/* Padding adjusts for screen sizes */}
             <Typography variant="h6" component="div" gutterBottom>
               {post.title}
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <Avatar
-                src={`${backendURL}${post.authorId.image}`}
-                alt={post.authorId.name}
-                sx={{ width: 24, height: 24, mr: 1 }}
-              />
-              <Typography variant="body2" color="text.secondary">
-                {post.authorId.name}
-              </Typography>
-            </Box>
             <Typography
               variant="caption"
               color="text.secondary"
@@ -154,6 +161,7 @@ export const RelatedPosts = ({ category, currentPostId }) => {
             >
               {moment(post.createdAt).fromNow()}
             </Typography>
+            {/* Post interaction icons */}
             <Box
               sx={{
                 display: "flex",
@@ -273,11 +281,6 @@ export const ExpandableCommentInput = ({
 
       {isExpanded && (
         <DarkBox>
-          {/* <Box display="flex" justifyContent="end" marginBottom={2}>
-            <Box>
-              <Typography variant="body2">{commentsCount} Comments</Typography>
-            </Box>
-          </Box> */}
           <Box display="flex" alignItems="flex-start" marginBottom={2}>
             <Avatar src={userAvatar} sx={{ marginRight: 1 }} />
             <TextField
@@ -299,19 +302,9 @@ export const ExpandableCommentInput = ({
               }}
             />
           </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <StyledIconButton>⬆️</StyledIconButton>
-              <StyledIconButton>⬇️</StyledIconButton>
-              <StyledIconButton>🔗</StyledIconButton>
-              <StyledIconButton>@</StyledIconButton>
-            </Box>
+          <Box display="flex" justifyContent="end" alignItems="center">
             <StyledButton variant="contained" onClick={handleSubmit}>
-              Comment
+              Post
             </StyledButton>
           </Box>
         </DarkBox>
@@ -377,7 +370,7 @@ export default function Post() {
         const data = await response.json();
         setPost(data);
         setPostId(data._id);
-        setLikesCount(data.likes.length || 0);
+        setLikesCount(data.likes?.length || 0);
         setIsLiked(data.isLiked || false);
       } catch (err) {
         setError(err.message);
@@ -670,10 +663,10 @@ export default function Post() {
   console.log(post, "post details");
 
   return (
-    <Grid container spacing={3} sx={{ px: { xs: 2, md: 4 }, py: 11.5 }}>
+    <Grid container spacing={3} sx={{ px: { xs: 2, md: 4 }, py: 1.5 }}>
       <Grid item xs={12} md={8}>
         <Box sx={{ maxWidth: "100%", margin: "auto" }}>
-          {post.image && (
+          {post.image && post.image.trim() !== "" && (
             <Box
               component="img"
               src={`${backendURL}${post.image}`}
@@ -703,17 +696,6 @@ export default function Post() {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Avatar
-                src={
-                  post.authorId?.image
-                    ? `${backendURL}${post.authorId.image}`
-                    : "/default-avatar.jpg"
-                }
-                sx={{ width: 30, height: 30, mr: 2 }}
-              />
-              <Typography variant="subtitle1" sx={{ mr: 2 }}>
-                {post.authorId?.name || "Unknown Author"}
-              </Typography>
               <Typography
                 variant="subtitle2"
                 color="text.secondary"
@@ -744,12 +726,16 @@ export default function Post() {
             </Typography>
           </Box>
 
-          <ReactQuill
-            value={post.content || ""}
-            readOnly={true}
-            theme="bubble"
-            style={{ padding: "-5px" }} // This removes the padding
-          />
+          <div className="custom-quill-container">
+            <ReactQuill
+              value={post.content || ""}
+              readOnly={true}
+              theme="bubble"
+              modules={{
+                toolbar: false,
+              }}
+            />
+          </div>
 
           <Box sx={{ display: "flex", alignItems: "center", mt: 3, mb: 3 }}>
             <IconButton onClick={handleLike}>
@@ -763,7 +749,7 @@ export default function Post() {
           <ExpandableCommentInput
             onSubmit={handleCommentSubmit}
             userAvatar={`${backendURL}/uploads/${profile?.image}`}
-            commentsCount={comments.length}
+            commentsCount={comments?.length}
             postId={postId}
             userId={userId}
           />
@@ -870,14 +856,14 @@ export default function Post() {
                     />
                   </IconButton>
                   <Typography variant="caption" sx={{ ml: 1 }}>
-                    {comment.likes.length} likes
+                    {comment.likes?.length} likes
                   </Typography>
                 </Box>
               </Box>
             ))}
           </Box>
 
-          {comments.length > 5 && (
+          {comments?.length > 5 && (
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
               <Button onClick={toggleShowAllComments}>
                 {showAllComments ? "Show Less" : "Show More"}
@@ -906,11 +892,10 @@ export default function Post() {
           <Divider sx={{ my: 4 }} />
         </Box>
       </Grid>
-
       <Grid item xs={12} md={4}>
         <Box
           sx={{
-            position: { md: "sticky" },
+            position: { md: "" },
             top: 20,
             maxHeight: { md: "calc(100vh - 40px)" },
             overflowY: "auto",

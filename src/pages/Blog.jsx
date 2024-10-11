@@ -1,47 +1,3 @@
-// import React from "react";
-// import { BigBlogCards, SmallBlogCards } from "../components/Cards";
-// import { Categories, LatestPosts } from "../components/GroupListItems";
-// import Search from "../components/Search";
-// import Pagination from "../components/Pagination";
-
-// const Blog = () => {
-//   return (
-//     <div className="md:mt-48 mt-36 md:px-[5rem] px-4">
-//       <Search />
-
-//       <div className="md:flex gap-12 my-5">
-//         <div className="md:w-[70%]">
-//           <BigBlogCards />
-
-//           {/* small card 1 */}
-//           <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-5 my-10">
-//             <SmallBlogCards />
-//             <SmallBlogCards />
-//             <SmallBlogCards />
-
-//             <SmallBlogCards />
-//             <SmallBlogCards />
-//             <SmallBlogCards />
-//           </div>
-
-//           <Pagination />
-//         </div>
-
-//         <div className="md:w-[30%]">
-//           <div className="mb-10">
-//             <Categories />
-//           </div>
-
-//           <div>
-//             <LatestPosts />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Blog;
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import {
@@ -79,7 +35,6 @@ const FilterSection = ({
       sx={{
         p: 0,
         borderRadius: 2,
-        // position: { md: "fixed" },
         top: { md: "100px" },
         right: { md: "24px" },
         width: "100%",
@@ -243,7 +198,7 @@ const BlogList = () => {
   };
 
   return (
-    <section className="mt-24">
+    <section className="mt-2">
       <Box sx={{ padding: 3 }}>
         <div className="mb-4 ml-[-2.6rem] ">
           <TextInput
@@ -294,7 +249,7 @@ const BlogList = () => {
                         <Typography
                           gutterBottom
                           variant="h5"
-                          fontSize="24px"
+                          fontSize="18px"
                           component="div"
                           fontWeight="bold"
                         >
@@ -308,16 +263,6 @@ const BlogList = () => {
                             marginBottom: 1,
                           }}
                         >
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Avatar
-                              src={`${backendURL}${post.authorId?.image}`}
-                              alt={post.authorId?.name}
-                              sx={{ width: 30, height: 30, marginRight: 1 }}
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {post.authorId?.name}
-                            </Typography>
-                          </Box>
                           <Typography variant="body2" color="text.secondary">
                             {moment(post.createdAt).fromNow()}
                           </Typography>
@@ -331,9 +276,13 @@ const BlogList = () => {
                           component={Link}
                           to={`/post/${post.slug}`}
                           variant="contained"
-                          color="primary"
                           endIcon={<ArrowForwardIcon />}
-                          className="hover:bg-blue-800"
+                          sx={{
+                            backgroundColor: "#e53935",
+                            "&:hover": {
+                              backgroundColor: "red",
+                            },
+                          }}
                         >
                           Read more
                         </Button>

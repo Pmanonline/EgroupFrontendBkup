@@ -45,7 +45,9 @@ const AdminSidebar = () => {
         <div className="flex flex-1 flex-col">
           <div className="flex flex-col ml-3  my-2">
             {/* <img src={logo} alt="logo" className="w-[3rem] h-[4rem] bg-whit" /> */}
-            <span className="text-4xl mb-2">Credulen</span>
+            <Link to={"/"} className=" cursor-pointer mb-2 ">
+              <span className="text-4xl mb-2">E-group</span>
+            </Link>
             <span className="text-sm underline mb-10">Administrator</span>
           </div>
 
@@ -105,7 +107,7 @@ const AdminSidebar = () => {
               onClick={() => handleLinkClick("/DashBoard/Admin/Posts")}
             >
               <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Posts</span>
+              <span className="text-[16px] my-auto">Blog_Posts</span>
             </Link>
             <Link
               to="/DashBoard/Admin/Events"
@@ -118,49 +120,7 @@ const AdminSidebar = () => {
               onClick={() => handleLinkClick("/DashBoard/Admin/Events")}
             >
               <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Events</span>
-            </Link>
-            <Link
-              to="/DashBoard/Admin/Authors"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Admin/Authors" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Admin/Authors")}
-            >
-              <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Authors</span>
-            </Link>
-            <Link
-              to="/DashBoard/Admin/SpeakerList"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Admin/SpeakerList"
-                    ? "#ffffff66 "
-                    : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Admin/SpeakerList")}
-            >
-              <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Speaker</span>
-            </Link>
-
-            <Link
-              to="/DashBoard/Notifications"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Notifications" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Notifications")}
-            >
-              <IoMdNotificationsOutline className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Notifications</span>
+              <span className="text-[16px] my-auto">Groups</span>
             </Link>
           </div>
           {/* Links */}

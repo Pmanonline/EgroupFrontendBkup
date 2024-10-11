@@ -37,6 +37,7 @@ const ResetPassword = () => {
       );
       setMessage(response.data.message);
       setSnackbarSeverity("success");
+
       setPassword("");
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");

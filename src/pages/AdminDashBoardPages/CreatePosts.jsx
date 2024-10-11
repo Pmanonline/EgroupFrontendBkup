@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Button,
-  TextField,
-  MenuItem,
-  Box,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import { Button, TextField, MenuItem, Box } from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CircularProgress } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { IoArrowBack } from "react-icons/io5";
+
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -30,7 +23,6 @@ export default function CreatePosts() {
     title: "",
     category: "uncategorized",
     content: "",
-    authorId: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -41,50 +33,30 @@ export default function CreatePosts() {
     message: "",
     severity: "success",
   });
-  const [authors, setAuthors] = useState([]);
+
+  const categories = [
+    "uncategorized",
+    "Education",
+    "Health",
+    "Entertainment",
+    "Technology",
+    "Security",
+    "Business",
+    "Scoop",
+  ];
 
   useEffect(() => {
-    const fetchAuthors = async () => {
-      try {
-        const res = await fetch(`${backendURL}/api/getAllAuthors`);
-        const data = await res.json();
-        // Ensure that each author object has an 'id' property
-        const formattedAuthors = data.map((author) => ({
-          id: author._id, // Assuming the backend sends '_id'
-          name: author.name,
-        }));
-        setAuthors(formattedAuthors);
-      } catch (error) {
-        console.error("Failed to fetch authors:", error);
-        showSnackbar("Failed to fetch authors", "error");
-      }
-    };
-
-    fetchAuthors();
     const fetchPost = async () => {
       if (postId) {
         try {
           const res = await fetch(`${backendURL}/api/getPostById/${postId}`);
           const post = await res.json();
-          console.log("Raw API response:", post);
-
           if (post) {
-            console.log("Setting form data with:", {
-              title: post.title || "",
-              category: post.category || "uncategorized",
-              content: post.content || "",
-              authorId: post.authorId || "",
-            });
-
             setFormData({
               title: post.title || "",
               category: post.category || "uncategorized",
               content: post.content || "",
-              authorId: post.authorId || "",
             });
-
-            console.log("Form data after setting:", formData);
-
             setImagePreview(post.image ? `${backendURL}${post.image}` : null);
           }
         } catch (error) {
@@ -115,8 +87,8 @@ export default function CreatePosts() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.content || !formData.authorId) {
-      showSnackbar("Title, content, and author are required", "error");
+    if (!formData.title || !formData.content) {
+      showSnackbar("Title and content are required", "error");
       return;
     }
 
@@ -126,15 +98,9 @@ export default function CreatePosts() {
       postFormData.append("title", formData.title);
       postFormData.append("content", formData.content);
       postFormData.append("category", formData.category);
-      postFormData.append("authorId", formData.authorId);
 
       if (selectedFile) {
         postFormData.append("image", selectedFile);
-      }
-
-      // Log FormData contents (for debugging)
-      for (let [key, value] of postFormData.entries()) {
-        console.log(key, value);
       }
 
       let response;
@@ -154,9 +120,6 @@ export default function CreatePosts() {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to save post");
       }
-
-      const data = await response.json();
-      console.log("Response data:", data);
 
       showSnackbar(
         postId ? "Post updated successfully" : "Post created successfully",
@@ -209,7 +172,7 @@ export default function CreatePosts() {
   };
 
   const handleBackClick = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
 
   return (
@@ -218,7 +181,7 @@ export default function CreatePosts() {
         onClick={handleBackClick}
         className="flex items-center text-blue-500 hover:text-blue-700 transition-colors duration-200"
       >
-        <IoArrowBack className="mr-2" size={24} /> {/* Back Arrow Icon */}
+        <IoArrowBack className="mr-2" size={24} />
         Back
       </button>
       <Box className="p-3 max-w-3xl mx-auto min-h-screen">
@@ -244,29 +207,12 @@ export default function CreatePosts() {
             onChange={handleInputChange}
             fullWidth
           >
-            <MenuItem value="uncategorized">Select a category</MenuItem>
-            <MenuItem value="javascript">JavaScript</MenuItem>
-            <MenuItem value="reactjs">React.js</MenuItem>
-            <MenuItem value="nextjs">Next.js</MenuItem>
+            {categories.map((category) => (
+              <MenuItem key={category} value={category}>
+                {category}
+              </MenuItem>
+            ))}
           </TextField>
-          <FormControl fullWidth>
-            <InputLabel id="author-select-label">Author</InputLabel>
-            <Select
-              labelId="author-select-label"
-              id="authorId"
-              name="authorId"
-              value={formData.authorId}
-              onChange={handleInputChange}
-              label="Author"
-              //   required
-            >
-              {authors.map((author) => (
-                <MenuItem key={author.id} value={author.id}>
-                  {author.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <Box className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
             <input
               type="file"
@@ -301,7 +247,7 @@ export default function CreatePosts() {
             <img
               src={imagePreview}
               alt="preview"
-              className="w-full h-[30rem]  object-cover"
+              className="w-full h-[30rem] object-cover"
             />
           )}
           <ReactQuill
