@@ -117,7 +117,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const ResetPassword = () => {
+const PasswordReset = () => {
   const { token } = useParams(); // Get the reset token from the URL
   const navigate = useNavigate(); // initialize useNavigate hook
   const [password, setPassword] = useState("");
@@ -226,4 +226,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default PasswordReset;
