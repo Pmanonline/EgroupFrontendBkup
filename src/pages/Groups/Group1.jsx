@@ -40,11 +40,7 @@ import {
   Close as CloseIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
-
-const backendURL =
-  import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_BACKEND_URL
-    : "http://localhost:3001";
+import backendURL from "../../config";
 
 const EGroup = () => {
   const { slug } = useParams();
@@ -72,7 +68,7 @@ const EGroup = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const groupId = groupData?.id;
-  const userId = userInfo?.user?._id;
+  const userId = userInfo?._id;
 
   const itemsPerPage = 5;
 

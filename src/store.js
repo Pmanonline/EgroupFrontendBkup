@@ -1,18 +1,49 @@
+// import { configureStore } from "@reduxjs/toolkit";
+// import authReducer from "./features/auth/authSlice";
+// import { authApi } from "./features/auth/authServive";
+// import errorReducer from "./features/reducers/errorReducer";
+// import profilesReducer from "./features/Users/UserSlice";
+
+// const store = configureStore({
+//   reducer: {
+//     auth: authReducer,
+//     error: errorReducer,
+//     profiles: profilesReducer,
+//     [authApi.reducerPath]: authApi.reducer,
+//   },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware().concat(authApi.middleware),
+// });
+
+// export default store;
+
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
 import { authApi } from "./features/auth/authServive";
 import errorReducer from "./features/reducers/errorReducer";
 import profilesReducer from "./features/Users/UserSlice";
+import storage from "redux-persist/lib/storage";
+import { persistStore, persistReducer } from "redux-persist";
 
-const store = configureStore({
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["auth"], // only auth will be persisted
+};
+
+const persistedReducer = persistReducer(persistConfig, authReducer);
+
+export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: persistedReducer,
     error: errorReducer,
     profiles: profilesReducer,
     [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(authApi.middleware),
 });
 
-export default store;
+export const persistor = persistStore(store);

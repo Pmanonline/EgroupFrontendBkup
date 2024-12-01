@@ -12,8 +12,7 @@ import { BiMessageSquareAdd } from "react-icons/bi";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../../config";
 
 const SpeakerList = () => {
   const navigate = useNavigate();

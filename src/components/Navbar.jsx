@@ -7,7 +7,7 @@ import { logoutUser } from "../features/auth/authSlice";
 import { fetchProfileById } from "../features/Users/userAction";
 import { FaUserCircle } from "react-icons/fa";
 import NavLogo from "../assets/images/navLogo.png";
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../config";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -203,12 +203,15 @@ const Navbar = () => {
               className="nav-link text-xl font-bold text-gray-800 cursor-pointer  "
             >
               {/* Menu */}
-              <img src={NavLogo} alt="" className="w-[12rem] z-0" />
+              <img src={NavLogo} alt="" className="w-[12rem] z-50" />
             </Link>
           </div>
           <div className="hidden lg:flex sm:items-center sm:justify-center navLogo:justify-end navLogo:mr-12  absolute left-0 right-0 top-0 bottom-0 z-30">
             <div className=" flex justify-between">
               <div className="flex space-x-4">
+                <NavItem to="/">
+                  <span className="text-black hover:text-[#E10A0A]">HOME</span>
+                </NavItem>
                 <NavItem to="/aboutUs">
                   <span className="text-black hover:text-[#E10A0A]">
                     ABOUT US
@@ -320,8 +323,11 @@ const Navbar = () => {
           </button>
         </div>
         <div className="py-4 space-y-2">
+          <NavItem to="/aboutUs" onClick={() => handleNavClick("/")}>
+            <span className="text-gray-700 hover:text-NavClr">HOME</span>
+          </NavItem>
           <NavItem to="/aboutUs" onClick={() => handleNavClick("/about")}>
-            ABOUT US
+            <span className="text-gray-700 hover:text-NavClr">ABOUT US</span>
           </NavItem>
           <NavItem
             dropdown="products"
@@ -329,25 +335,32 @@ const Navbar = () => {
             isOpen={productsOpen}
             dropdownRef={productsDropdownRef}
           >
-            OUR PRODUCTS
+            <span className="text-gray-700 hover:text-NavClr">
+              OUR PRODUCTS
+            </span>
           </NavItem>
           <NavItem
             to="/Ebusinesses"
             onClick={() => handleNavClick("/essential-direct")}
           >
-            ESSENTIAL DIRECT
+            <span className="text-gray-700 hover:text-NavClr">
+              ESSENTIAL DIRECT
+            </span>
           </NavItem>
           <NavItem
             dropdown={[
               { to: "/Segn-oshin-online", label: "Segun Oshin Online" },
               { to: "/Oshin-invetsments", label: "Oshin Investments" },
               { to: "/Books", label: "Books" },
+              { to: "/Blog", label: "Blog" },
             ]}
             toggle={toggleOshin}
             isOpen={oshinOpen}
             dropdownRef={oshinDropdownRef}
           >
-            OSHIN FAMILY
+            <span className="text-gray-700 hover:text-NavClr">
+              OSHIN FAMILY
+            </span>
           </NavItem>
         </div>
       </div>

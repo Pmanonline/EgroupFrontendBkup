@@ -20,9 +20,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import backendURL from "../../config";
 
 const AdminDashboard = () => {
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [users, setUsers] = useState([]);
   const [setGroup, setTotalGroup] = useState([]);
   const [discussion, setDiscussion] = useState([]);
@@ -170,12 +170,7 @@ const AdminDashboard = () => {
               <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
                 Recent Users
               </h5>
-              <Button
-                as={Link}
-                to="/dashboard?tab=users"
-                size="sm"
-                color="purple"
-              >
+              <Button as={Link} to="/DashBoard/Users" size="sm" color="purple">
                 See all
               </Button>
             </div>

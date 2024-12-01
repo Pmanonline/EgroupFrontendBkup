@@ -7,9 +7,9 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { TbMoneybag } from "react-icons/tb";
 import { FaUserCircle } from "react-icons/fa";
 import { fetchProfileById } from "../../features/Users/userAction";
+import backendURL from "../../config";
 
 function Header() {
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [isNavOpen, setIsNavOpen] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();

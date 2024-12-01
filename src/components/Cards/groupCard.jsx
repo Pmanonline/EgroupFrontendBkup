@@ -1,14 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import backendURL from "../../config";
 
 const FRONTEND_URL =
   import.meta.env.VITE_FRONTEND_URL || "http://localhost:5173";
-
-const backendURL =
-  import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_BACKEND_URL
-    : "http://localhost:3001";
 
 const GroupCard = ({ id, name, members, category, slug }) => (
   <Link

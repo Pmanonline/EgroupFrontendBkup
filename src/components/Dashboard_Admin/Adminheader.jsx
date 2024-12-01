@@ -242,9 +242,9 @@ import { CiViewList } from "react-icons/ci";
 import { IoPerson } from "react-icons/io5";
 import { VscDashboard } from "react-icons/vsc";
 import { FaUsersGear } from "react-icons/fa6";
+import backendURL from "../../config";
 
 function Adminheader() {
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [isNavOpen, setIsNavOpen] = useState(false);
   const fileInputRef = useRef(null);
   const navRef = useRef(null);

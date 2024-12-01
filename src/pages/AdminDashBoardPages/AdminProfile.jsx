@@ -21,6 +21,7 @@ import Spinner from "../../components/tools/Spinner";
 import { resetSuccess } from "../../features/Users/UserSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import backendURL from "../../config";
 
 function AdminProfile() {
   const fileInputRef = useRef(null);
@@ -38,7 +39,6 @@ function AdminProfile() {
     (state) => state.profiles
   );
   const userId = userInfo?.user._id;
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const dispatch = useDispatch();
 
   const DeleteOpen = () => {

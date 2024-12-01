@@ -12,8 +12,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { IoArrowBack } from "react-icons/io5";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../../config";
 
 const CreateSpeaker = () => {
   const { speakerId } = useParams();

@@ -44,8 +44,7 @@ import { formatDistanceToNow } from "date-fns";
 import moment from "moment";
 import { styled } from "@mui/system";
 import "../index.css";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../config";
 
 const DarkBox = styled(Box)(({ theme }) => ({
   backgroundColor: "gray",
@@ -327,8 +326,8 @@ export default function Post() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const { profile } = useSelector((state) => state.profiles);
   const currentUser = useSelector((state) => state.auth);
-  const userId = currentUser?.userInfo?.user?._id;
-  const email = currentUser?.userInfo?.user?.email;
+  const userId = currentUser?.userInfo?._id;
+  const email = currentUser?.userInfo?.email;
   const name = profile?.username;
   const image = profile?.image;
   const [likesCount, setLikesCount] = useState(0);
@@ -343,6 +342,7 @@ export default function Post() {
   const [commentToDeleteId, setCommentToDeleteId] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [comment, setComment] = useState("");
+  console.log(currentUser, "currentUser");
 
   const handleMenuOpen = (event, commentId) => {
     setAnchorEl(event.currentTarget);
@@ -389,7 +389,7 @@ export default function Post() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: currentUser.userInfo.user._id }),
+        body: JSON.stringify({ userId: currentUser.userInfo?._id }),
       });
       if (!response.ok) {
         throw new Error("Failed to like post");
@@ -614,7 +614,7 @@ export default function Post() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: currentUser.userInfo.user._id }),
+        body: JSON.stringify({ userId: currentUser.userInfo?._id }),
       });
 
       if (!response.ok) {
@@ -661,6 +661,7 @@ export default function Post() {
   if (error) return <Typography color="error">{error}</Typography>;
   if (!post) return <Typography>Post not found</Typography>;
   console.log(post, "post details");
+  console.log(comments);
 
   return (
     <Grid container spacing={3} sx={{ px: { xs: 2, md: 4 }, py: 1.5 }}>
@@ -800,9 +801,9 @@ export default function Post() {
                     </Box>
 
                     {/* MoreVert icon button aligned to the right */}
-                    {currentUser?.userInfo?.user &&
-                      (currentUser.userInfo.user._id === comment.userId?._id ||
-                        currentUser.userInfo.user.isAdmin) && (
+                    {currentUser?.userInfo &&
+                      (currentUser.userInfo?._id === comment.userId?._id ||
+                        currentUser.userInfo?.isAdmin) && (
                         <IconButton
                           size="small"
                           onClick={(event) =>
@@ -848,7 +849,7 @@ export default function Post() {
                   >
                     <ThumbUp
                       color={
-                        comment.likes.includes(currentUser?.userInfo?.user?._id)
+                        comment.likes.includes(currentUser?.userInfo?._id)
                           ? "primary"
                           : "inherit"
                       }

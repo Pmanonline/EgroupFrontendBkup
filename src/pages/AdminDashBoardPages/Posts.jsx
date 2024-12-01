@@ -16,7 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { IoClose } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BiMessageSquareAdd } from "react-icons/bi";
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../../config";
 
 export default function Post() {
   const { userInfo } = useSelector((state) => state.auth);

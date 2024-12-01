@@ -11,6 +11,7 @@ import { IoPerson } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { VscDashboard } from "react-icons/vsc";
 import { FaUsersGear } from "react-icons/fa6";
+import { FaUserCircle, FaHome } from "react-icons/fa";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -69,6 +70,18 @@ const AdminSidebar = () => {
               <span className="text-[16px] my-auto">Dashboard</span>
             </Link>
 
+            <Link
+              to="/"
+              style={{
+                color: "white",
+                backgroundColor: activeLink === "/" ? "#ffffff66 " : "",
+              }}
+              className="mb-3 flex gap-3 rounded-md p-2"
+              onClick={() => handleLinkClick("/DashBoard/AdminProfile")}
+            >
+              <FaHome className="text-white w-6 h-6" />
+              <span className="text-[16px] my-auto">Home</span>
+            </Link>
             <Link
               to="/DashBoard/AdminProfile"
               style={{

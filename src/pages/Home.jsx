@@ -24,7 +24,7 @@ const Home = () => {
         <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between w-full">
           {/* Left Side - Text */}
           <div className="lg:w-1/2 w-full text-center lg:text-center">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl leading-tight font-bold text-white mb-4">
+            <h1 className="text-6xl lg:text-7xl leading-tight font-bold text-white mb-4">
               Say hello to <br /> Essential Point
             </h1>
 

@@ -139,8 +139,8 @@ import Books from "./pages/Books";
 import Group1 from "./pages/Groups/Group1";
 import DiscussionPage from "./pages/Groups/Discussion";
 import Conferences from "./pages/Conference";
-import Webinar from "./pages/Webinars";
-import Solutions from "./pages/Solution";
+// import Webinar from "./pages/Webinars";
+// import Solutions from "./pages/Solution";
 import Contact from "./pages/Contactus";
 import RegisterAdmin from "../src/pages/RegisterAdmin";
 import Signup from "../src/pages/RegisterUser";
@@ -197,9 +197,9 @@ const App = () => {
           <Route path="/Post/:slug" element={<Post />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/event/:slug" element={<SingleEventPost />} />
-          <Route path="/webinars" element={<Webinar />} />
+          {/* <Route path="/webinars" element={<Webinar />} /> */}
           <Route path="/conferences" element={<Conferences />} />
-          <Route path="/solutions" element={<Solutions />} />
+          {/* <Route path="/solutions" element={<Solutions />} /> */}
           <Route path="/contactus" element={<Contact />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/RegisterAdmin" element={<RegisterAdmin />} />

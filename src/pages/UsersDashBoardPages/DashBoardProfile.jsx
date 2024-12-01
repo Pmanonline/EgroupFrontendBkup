@@ -21,6 +21,7 @@ import Spinner from "../../components/tools/Spinner";
 import { resetSuccess } from "../../features/Users/UserSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import backendURL from "../../config";
 
 function DashBoardProfile() {
   const fileInputRef = useRef(null);
@@ -39,7 +40,6 @@ function DashBoardProfile() {
   );
   const userId = userInfo?.user?._id;
   console.log(userInfo);
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const dispatch = useDispatch();
 
   const DeleteOpen = () => {

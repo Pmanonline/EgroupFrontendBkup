@@ -18,8 +18,7 @@ import { CircularProgress } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { IoArrowBack } from "react-icons/io5";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../../config";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;

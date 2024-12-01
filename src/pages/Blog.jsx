@@ -22,8 +22,7 @@ import { TextInput } from "flowbite-react";
 import { HiOutlineSearch } from "react-icons/hi";
 import NoResult from "../assets/noResult.png";
 import Pagination from "../components/Pagination";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../config";
 
 const FilterSection = ({
   categories,

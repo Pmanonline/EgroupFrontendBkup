@@ -17,13 +17,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { IoClose } from "react-icons/io5";
 import { AiTwotoneDelete } from "react-icons/ai";
 import MuiAlert from "@mui/material/Alert";
+import backendURL from "../../config";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function AdminUsersLists() {
-  const backendURL = import.meta.env.VITE_BACKEND_URL;
   const { userInfo } = useSelector((state) => state.auth);
   const [users, setUsers] = useState([]);
   const [showMore, setShowMore] = useState(true);

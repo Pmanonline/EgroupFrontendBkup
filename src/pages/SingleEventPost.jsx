@@ -29,8 +29,7 @@ import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-const backendURL = import.meta.env.VITE_BACKEND_URL;
+import backendURL from "../config";
 
 const RelatedEventsCarousel = ({ events }) => {
   const scrollRef = useRef(null);
@@ -466,9 +465,6 @@ const SingleEventPost = () => {
               </form>
             </Paper>
           </Grid>
-
-          {/* 
-
           <Grid item xs={12} md={4}>
             <Paper
               elevation={0}
@@ -507,7 +503,7 @@ const SingleEventPost = () => {
                 </Box>
               ))}
             </Paper>
-          </Grid> */}
+          </Grid>{" "}
           <Grid item xs={12} md={4}>
             <Box
               display="flex"

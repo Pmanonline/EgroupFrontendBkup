@@ -246,6 +246,7 @@ import { BiMessageSquareAdd } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import backendURL from "../../config";
 import {
   Table,
   TableBody,
@@ -265,11 +266,6 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-
-const backendURL =
-  import.meta.env.MODE === "production"
-    ? import.meta.env.VITE_BACKEND_URL
-    : "http://localhost:3001";
 
 const AdminEventLists = () => {
   const [groups, setGroups] = useState([]);
