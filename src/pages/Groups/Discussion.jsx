@@ -1199,7 +1199,12 @@ const GroupDiscussionPage = () => {
     </Box>
   );
 
-  if (loading) return <Typography>Loading discussion...</Typography>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen w-screen absolute top-0 left-0 bg-white bg-opacity-80 z-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+      </div>
+    );
   if (error) return <Typography color="error">{error}</Typography>;
   if (!discussion) return <Typography>Discussion not found</Typography>;
 

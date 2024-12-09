@@ -81,9 +81,9 @@ const Navbar = () => {
   const { profile, loading, success, error } = useSelector(
     (state) => state.profiles
   );
-  const userId = userInfo?.user?._id;
+  const userId = userInfo?._id;
   const dashboardPath =
-    userInfo?.user?.role === "admin"
+    userInfo?.role === "admin"
       ? "/DashBoard/Admin_Dashboard"
       : "/DashBoard/profile";
 
@@ -227,7 +227,7 @@ const Navbar = () => {
                     OUR PRODUCTS
                   </span>
                 </NavItem>
-                <NavItem to="/Ebusinesses">
+                <NavItem target="_blank" to="https://edirect.ng/">
                   <span className="text-black hover:text-[#E10A0A]">
                     ESSENTIAL DIRECT
                   </span>
@@ -486,10 +486,10 @@ const ProductsDropdown = ({ isOpen, onClose, isSidebarOpen }) => {
           />
           <div className="grid grid-cols-1 gap-4">
             {[
-              { name: "E-Venue", url: "https://evenue.ng/" },
-              { name: "E-Drive", url: "http://edrive.ng" },
-              { name: "E-Registry", url: "http://edrive.ng" },
-              { name: "E-Direct", url: "https://edirect.essential.ng/" },
+              { name: "E-Direct", url: "http://edirect.ng" },
+              { name: "E-Schools", url: "http://eschoolconnect.ng" },
+              { name: "E-BNB", url: "http://ebnbhotel.com" },
+              { name: "E-Stores", url: "http://estores.ng" },
             ].map((product) => (
               <Link
                 target="_blank"
@@ -547,10 +547,10 @@ const ProductsDropdown = ({ isOpen, onClose, isSidebarOpen }) => {
 
               <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                 {[
-                  { name: "E-Venue", url: "https://evenue.ng/" },
-                  { name: "E-Drive", url: "http://edrive.ng" },
-                  { name: "E-Registry", url: "http://edrive.ng" },
-                  { name: "E-Direct", url: "https://edirect.essential.ng/" },
+                  { name: "E-Direct", url: "http://edirect.ng" },
+                  { name: "E-Schools", url: "http://eschoolconnect.ng" },
+                  { name: "E-BNB", url: "http://ebnbhotel.com" },
+                  { name: "E-Stores", url: "http://estores.ng" },
                 ].map((product) => (
                   <Link
                     target="_blank"
@@ -566,7 +566,10 @@ const ProductsDropdown = ({ isOpen, onClose, isSidebarOpen }) => {
             </div>
             <div className="md:w-[10%] md:pl-8  mt-24 00 text-black font-medium rounded-lg text-center hover:text-red-500   transition-colors duration-300 transitio ease-in-out  transform hover:scale-110 cursor-pointer">
               <NavLink to={"/AllServiceCards"} onClick={onClose}>
-                <MdArrowForward size={48} />
+                <span className="flex">
+                  View All
+                  <MdArrowForward size={48} />
+                </span>
               </NavLink>
             </div>
           </div>
