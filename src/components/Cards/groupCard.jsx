@@ -4,15 +4,10 @@ import axios from "axios";
 import backendURL from "../../config";
 import GroupImage from "../../assets/images/groupImage.png";
 
-const FRONTEND_URL =
-  import.meta.env.VITE_FRONTEND_URL ||
-  "http://localhost:5173" ||
-  "https://egroup-nine.vercel.app";
-
 const GroupCard = ({ id, name, members, category, slug }) => (
   <Link
     // target="blank"
-    to={`${FRONTEND_URL}/Group/${slug}`}
+    to={`/Group/${slug}`}
     className="group-card flex-shrink-0 w-64 mr-4"
   >
     <div className="card bg-white rounded-lg shadow-md overflow-hidden">
