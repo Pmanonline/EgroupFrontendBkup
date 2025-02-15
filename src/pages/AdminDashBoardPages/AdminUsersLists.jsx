@@ -80,7 +80,7 @@ export default function AdminUsersLists() {
     if (userInfo) {
       fetchUsers();
     }
-  }, [userInfo?.user._id]);
+  }, [userInfo?._id]);
 
   const handleShowMore = async () => {
     const startIndex = users.length;
@@ -154,8 +154,7 @@ export default function AdminUsersLists() {
                   {filteredUsers.map((user) => (
                     <Table.Row
                       key={user._id}
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                    >
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <Table.Cell>
                         {new Date(user.createdAt).toLocaleDateString()}
                       </Table.Cell>
@@ -189,8 +188,7 @@ export default function AdminUsersLists() {
                             setDeleteOpen(true);
                             setUserIdToDelete(user._id);
                           }}
-                          className="font-medium text-red-500 hover:underline cursor-pointer"
-                        >
+                          className="font-medium text-red-500 hover:underline cursor-pointer">
                           Delete
                         </span>
                       </Table.Cell>
@@ -202,8 +200,7 @@ export default function AdminUsersLists() {
             {showMore && (
               <button
                 onClick={handleShowMore}
-                className="w-full text-teal-500 self-center text-sm py-7"
-              >
+                className="w-full text-teal-500 self-center text-sm py-7">
                 Show more
               </button>
             )}
@@ -218,8 +215,7 @@ export default function AdminUsersLists() {
               open={Deleteopen}
               onClose={DeleteClose}
               aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
+              aria-describedby="alert-dialog-description">
               <DialogTitle id="alert-dialog-title">
                 Are you sure you want to delete your account?
               </DialogTitle>
@@ -251,13 +247,11 @@ export default function AdminUsersLists() {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
+          sx={{ width: "100%" }}>
           {snackbar.message}
         </Alert>
       </Snackbar>

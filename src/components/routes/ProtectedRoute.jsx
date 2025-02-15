@@ -18,8 +18,7 @@ const ProtectedRoute = ({ requiredRole }) => {
           </p>
           <NavLink
             to="/login"
-            className="text-center inline-block bg-purple-600 text-white px-4 py-2 rounded-lg transition duration-300 hover:bg-purple-700"
-          >
+            className="text-center inline-block bg-purple-600 text-white px-4 py-2 rounded-lg transition duration-300 hover:bg-purple-700">
             Log in
           </NavLink>
         </div>
@@ -28,7 +27,7 @@ const ProtectedRoute = ({ requiredRole }) => {
   }
 
   // Extract the user's role from userInfo
-  const userRole = userInfo?.user?.role;
+  const userRole = userInfo?.role;
 
   // Check if the user has the required role
   if (requiredRole && userRole !== requiredRole) {

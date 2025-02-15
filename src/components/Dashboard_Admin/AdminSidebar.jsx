@@ -1,159 +1,161 @@
-import React, { useState, useEffect } from "react";
-
-import { HiOutlineLogout } from "react-icons/hi";
-import { RxDashboard } from "react-icons/rx";
-import { CiViewList } from "react-icons/ci";
-import { LuFileTerminal } from "react-icons/lu";
-import { TbUnlink } from "react-icons/tb";
-import { LuBookTemplate } from "react-icons/lu";
-import { MdPlaylistAdd } from "react-icons/md";
-import { IoPerson } from "react-icons/io5";
-import { IoMdNotificationsOutline } from "react-icons/io";
-import { VscDashboard } from "react-icons/vsc";
-import { FaUsersGear } from "react-icons/fa6";
-import { FaUserCircle, FaHome } from "react-icons/fa";
-
-import { useSelector, useDispatch } from "react-redux";
-
-import { Link, useNavigate } from "react-router-dom";
-import { logoutUser } from "../../features/auth/authSlice";
-import classNames from "classnames";
-// import logo from "../../assets/images/logo3.png";
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Home,
+  Users,
+  FileText,
+  UserCircle,
+  Settings,
+  Bell,
+  LogOut,
+  ChevronRight,
+  MenuSquare,
+  Menu,
+} from "lucide-react";
 
 const AdminSidebar = () => {
-  const dispatch = useDispatch();
-  const [nav, setNav] = useState(false);
-  const active = true;
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
-  const handleNav = () => {
-    setNav(!nav);
-  };
-
-  const [activeLink, setActiveLink] = useState(null);
-
-  const handleLinkClick = (link) => {
-    setActiveLink(link);
-  };
   const handleLogout = () => {
-    dispatch(logoutUser());
+    // Your logout logic here
     navigate("/");
   };
 
+  const menuItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/DashBoard/Admin_Dashboard",
+      badge: 3,
+    },
+    {
+      title: "Home",
+      icon: Home,
+      path: "/",
+    },
+    {
+      title: "Profile",
+      icon: UserCircle,
+      path: "/DashBoard/AdminProfile",
+    },
+    {
+      title: "Users",
+      icon: Users,
+      path: "/DashBoard/Users",
+      badge: 12,
+    },
+    {
+      title: "Blog Posts",
+      icon: FileText,
+      path: "/DashBoard/Admin/Posts",
+      badge: 5,
+    },
+    {
+      title: "Groups",
+      icon: Users,
+      path: "/DashBoard/Admin/Group",
+    },
+  ];
+
   return (
-    <div className="lg:flex lg:flex-col lg:min-w-[15rem] md:bg-purple lg:p-3 text-xs text-white mod:absolute h-screen overflow-y-auto overflow-x-hidden">
-      <div className="md:flex hidden lg:gap-0.5 lg:py-3  justify-between  h-20 px-2 2xl:px-16  flex-col flex-1 ">
-        <div className="flex flex-1 flex-col">
-          <div className="flex flex-col ml-3  my-2">
-            {/* <img src={logo} alt="logo" className="w-[3rem] h-[4rem] bg-whit" /> */}
-            <Link to={"/"} className=" cursor-pointer mb-2 ">
-              <span className="text-4xl mb-2">E-group</span>
-            </Link>
-            <span className="text-sm underline mb-10">Administrator</span>
+    <>
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-red-900 text-white md:hidden">
+        <Menu className="w-6 h-6" />
+      </button>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed md:relative flex flex-col min-h-screen bg-red-900 text-white transition-all duration-300 z-50
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+          ${collapsed ? "md:w-20" : "md:w-64"}
+          md:translate-x-0 w-64`}>
+        {/* Desktop Toggle Button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-8 bg-indigo-600 rounded-full p-1.5 hover:bg-indigo-700 focus:outline-none hidden md:block">
+          <ChevronRight
+            className={`h-4 w-4 transition-transform duration-300 ${
+              collapsed ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {/* Logo Section */}
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-indigo-500/50">
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+            <MenuSquare className="w-6 h-6" />
           </div>
-
-          {/* Links */}
-          <div className="">
-            <Link
-              to="/DashBoard/Admin_Dashboard"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Admin_Dashboard"
-                    ? "#ffffff66 "
-                    : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Admin_Dashboard")}
-            >
-              <VscDashboard className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Dashboard</span>
-            </Link>
-
-            <Link
-              to="/"
-              style={{
-                color: "white",
-                backgroundColor: activeLink === "/" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/AdminProfile")}
-            >
-              <FaHome className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Home</span>
-            </Link>
-            <Link
-              to="/DashBoard/AdminProfile"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/AdminProfile" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/AdminProfile")}
-            >
-              <IoPerson className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Profile</span>
-            </Link>
-            <Link
-              to="/DashBoard/Users"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Users" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Users")}
-            >
-              <FaUsersGear className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Users</span>
-            </Link>
-
-            <Link
-              to="/DashBoard/Admin/Posts"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Admin/Posts" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Admin/Posts")}
-            >
-              <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Blog_Posts</span>
-            </Link>
-            <Link
-              to="/DashBoard/Admin/Events"
-              style={{
-                color: "white",
-                backgroundColor:
-                  activeLink === "/DashBoard/Admin/Events" ? "#ffffff66 " : "",
-              }}
-              className="mb-3 flex gap-3 rounded-md p-2"
-              onClick={() => handleLinkClick("/DashBoard/Admin/Events")}
-            >
-              <CiViewList className="text-white w-6 h-6" />
-              <span className="text-[16px] my-auto">Groups</span>
-            </Link>
-          </div>
-          {/* Links */}
+          {(!collapsed || !isOpen) && (
+            <div>
+              <h1 className="text-xl font-bold">E-group</h1>
+              <p className="text-xs text-indigo-200">Administrator</p>
+            </div>
+          )}
         </div>
-        <hr className="border-t border-gray-200 my-4" />
-        <div className="mt-auto">
-          <div
-            style={{
-              color: "white",
-              backgroundColor: "#ffffff ",
-            }}
-            className="my-5 flex gap-3 rounded-md p-2 cursor-pointer"
+
+        {/* Navigation Menu */}
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "hover:bg-white/10 text-indigo-100"
+                }`}>
+                <Icon className="w-5 h-5" />
+                {(!collapsed || !isOpen) && (
+                  <div className="flex-1 flex items-center justify-between">
+                    <span>{item.title}</span>
+                    {item.badge && (
+                      <span className="px-2 py-1 text-xs rounded-full bg-white/20">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {collapsed && item.badge && (
+                  <span className="absolute right-2 px-1.5 py-0.5 text-xs rounded-full bg-white/20">
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Footer Section */}
+        <div className="p-4 border-t border-indigo-500/50">
+          <button
             onClick={handleLogout}
-          >
-            <HiOutlineLogout className="text-red-500 w-6 h-6" />
-            <span className="text-[16px] my-auto text-red-500">Sign out</span>
-          </div>
+            className="flex items-center gap-3 w-full px-3 py-2 text-red-200 rounded-lg hover:bg-white/10 transition-colors duration-200">
+            <LogOut className="w-5 h-5" />
+            {(!collapsed || !isOpen) && <span>Sign out</span>}
+          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

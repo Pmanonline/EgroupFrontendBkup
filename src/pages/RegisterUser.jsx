@@ -2,15 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
+import { Alert, AlertDescription } from "../components/tools/Alert"; // Import your custom Alert component
 import { registerUser } from "../features/auth/authActions";
 import { resetSuccess, resetError } from "../features/auth/authSlice";
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
-// import AutographLogo from "../assets/images/autograghLogo.png";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// Define the validation schema using yup
+const schema = yup.object().shape({
+  username: yup.string().required("Username is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().required("Password is required"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .required("Please confirm your password"),
 });
 
 const Signup = () => {
@@ -25,22 +32,25 @@ const Signup = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
-
-  const password = watch("password");
-  const confirmPassword = watch("confirmPassword");
+  } = useForm({
+    resolver: yupResolver(schema), // Use yup for validation
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    variant: "default",
+    message: "",
+  });
 
   useEffect(() => {
     if (success) {
-      setSnackbarMessage("Registered successfully. You can now log in.");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
+      setAlertConfig({
+        message: "Registered successfully. You can now log in.",
+        variant: "success",
+      });
+      setShowAlert(true);
 
       const timer = setTimeout(() => {
         navigate("/login");
@@ -53,26 +63,16 @@ const Signup = () => {
 
   useEffect(() => {
     if (error) {
-      setSnackbarMessage(error);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      setAlertConfig({
+        message: error,
+        variant: "error",
+      });
+      setShowAlert(true);
       dispatch(resetError());
     }
   }, [error, dispatch]);
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpenSnackbar(false);
-  };
-
   const submitForm = (data) => {
-    if (data.password !== data.confirmPassword) {
-      setSnackbarMessage("Passwords do not match!");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
     data.email = data.email.toLowerCase();
     dispatch(registerUser(data));
   };
@@ -81,9 +81,7 @@ const Signup = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div className="text-center">
-          {/* <img src={AutographLogo} alt="Autograph Logo" /> */}
-
-          <p className="mt-2  font-bold text-lg text-gray-600">
+          <p className="mt-2 font-bold text-lg text-gray-600">
             Register Account
           </p>
         </div>
@@ -103,12 +101,10 @@ const Signup = () => {
                   id="username"
                   className="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-btColour focus:border-btColour focus:z-10 sm:text-sm"
                   placeholder="Username"
-                  {...register("username", {
-                    required: "Username is required",
-                  })}
+                  {...register("username")}
                 />
                 {errors.username && (
-                  <p className="mt-1 text-sm text-red -600">
+                  <p className="mt-1 text-sm text-red-600">
                     {errors.username.message}
                   </p>
                 )}
@@ -128,7 +124,7 @@ const Signup = () => {
                   id="email"
                   className="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-btColour focus:border-btColour focus:z-10 sm:text-sm"
                   placeholder="Email address"
-                  {...register("email", { required: "Email is required" })}
+                  {...register("email")}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">
@@ -151,15 +147,12 @@ const Signup = () => {
                   id="password"
                   className="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-btColour focus:border-btColour focus:z-10 sm:text-sm"
                   placeholder="Password"
-                  {...register("password", {
-                    required: "Password is required",
-                  })}
+                  {...register("password")}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                  onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
                   ) : (
@@ -187,15 +180,12 @@ const Signup = () => {
                   id="confirmPassword"
                   className="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-btColour focus:border-btColour focus:z-10 sm:text-sm"
                   placeholder="Confirm password"
-                  {...register("confirmPassword", {
-                    required: "Please confirm your password",
-                  })}
+                  {...register("confirmPassword")}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
                   ) : (
@@ -215,8 +205,7 @@ const Signup = () => {
             <div className="text-sm">
               <Link
                 to="/login"
-                className="font-medium text-btColour hover:text-blue-500"
-              >
+                className="font-medium text-btColour hover:text-blue-500">
                 Already have an account?
               </Link>
             </div>
@@ -226,8 +215,7 @@ const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-NavClr hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-btColour transition-all duration-200 ease-in-out "
-            >
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus :ring-btColour transition-all duration-200 ease-in-out ">
               {loading ? (
                 <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin" />
               ) : (
@@ -237,15 +225,17 @@ const Signup = () => {
           </div>
         </form>
 
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-        >
-          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
-            {snackbarMessage}
+        {/* Alert Component */}
+        {showAlert && (
+          <Alert
+            variant={alertConfig.variant}
+            show={showAlert}
+            onClose={() => setShowAlert(false)}
+            autoClose={true}
+            autoCloseTime={5000}>
+            <AlertDescription>{alertConfig.message}</AlertDescription>
           </Alert>
-        </Snackbar>
+        )}
       </div>
     </div>
   );

@@ -5,23 +5,29 @@ import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../features/auth/authSlice";
 import { verifyAdminOTP, loginUser } from "../features/auth/authActions";
 import { resetSuccess, resetError } from "../features/auth/authSlice";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-// import AutographLogo from "../assets/images/autograghLogo.png";
+import { Alert, AlertDescription } from "../components/tools/Alert";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { handleGoogleLogin } from "../features/auth/authActions";
 import { setCredentials } from "../features/auth/authSlice";
 
 const Login = () => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [showPassword, setShowPassword] = useState(false);
   const [googleError, setGoogleError] = useState(null);
   const [formError, setFormError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    variant: "default",
+    message: "",
+  });
+
+  const showAlertMessage = (message, variant = "default") => {
+    setAlertConfig({ message, variant });
+    setShowAlert(true);
+  };
 
   const { userInfo, error, isOtpRequired, tempUserId } = useSelector(
     (state) => state.auth
@@ -37,15 +43,12 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpenSnackbar(false);
-  };
-
   useEffect(() => {
     if (userInfo && (!userInfo.role === "admin" || !isOtpRequired)) {
       const timer = setTimeout(() => {
-        navigate(userInfo.role === "admin" ? "/Admin/DashBoard" : "/");
+        navigate(
+          userInfo.role === "admin" ? "/DashBoard/Admin_Dashboard" : "/"
+        );
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -59,19 +62,16 @@ const Login = () => {
       const result = await dispatch(loginUser(data)).unwrap();
 
       if (result.requireOTP) {
-        setFormError({
-          type: "info",
-          message: "OTP sent to your email. Please verify.",
-        });
+        showAlertMessage("OTP sent to your email. Please verify.", "success");
       } else {
         reset();
         navigate(result.user.role === "admin" ? "/Admin/DashBoard" : "/");
       }
     } catch (err) {
-      setFormError({
-        type: "error",
-        message: err.message || "Login failed. Please check your credentials.",
-      });
+      showAlertMessage(
+        err.message || "Login failed. Please check your credentials",
+        "destructive"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -79,9 +79,10 @@ const Login = () => {
 
   const handleOtpSubmit = (otp) => {
     if (!tempUserId) {
-      setSnackbarMessage("User ID not found. Please try logging in again.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      showAlertMessage(
+        "User  ID not found. Please try logging in again.",
+        "destructive"
+      );
       dispatch(resetError());
       return;
     }
@@ -89,15 +90,11 @@ const Login = () => {
     dispatch(verifyAdminOTP({ userId: tempUserId, otp }))
       .unwrap()
       .then((response) => {
-        setSnackbarMessage("OTP verified successfully!");
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
+        showAlertMessage("OTP verified successfully!", "success");
         dispatch(resetSuccess());
       })
       .catch((error) => {
-        setSnackbarMessage(error || "OTP verification failed");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        showAlertMessage(error || "OTP verification failed", "destructive");
       });
   };
 
@@ -107,16 +104,11 @@ const Login = () => {
 
     try {
       const response = await handleGoogleLogin(credentialResponse.credential);
-      // Check if response contains an error message
       if (response.error) {
-        setGoogleError({
-          type: "error",
-          message: response.message || "Google login failed",
-        });
-        // Show the error in Snackbar
-        setSnackbarMessage(response.message || "Google login failed");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        showAlertMessage(
+          response.message || "Google login failed",
+          "destructive"
+        );
         return;
       }
 
@@ -125,14 +117,7 @@ const Login = () => {
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || error.message || "Google login failed";
-      setGoogleError({
-        type: "error",
-        message: errorMessage,
-      });
-      // Show the error in Snackbar
-      setSnackbarMessage(errorMessage);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      showAlertMessage(errorMessage, "destructive");
     } finally {
       setIsGoogleLoading(false);
     }
@@ -140,7 +125,7 @@ const Login = () => {
 
   const handleGoogleError = (error) => {
     console.error("Google Sign-In Error:", error);
-    let errorMessage = "Google Sign-In failed. ";
+    let errorMessage = "Google Sign -In failed. ";
 
     if (error.error === "origin_mismatch") {
       errorMessage +=
@@ -157,6 +142,7 @@ const Login = () => {
       type: "error",
       message: errorMessage,
     });
+    showAlertMessage(errorMessage, "destructive");
   };
 
   return (
@@ -164,7 +150,6 @@ const Login = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
           <div className="text-center">
-            {/* <img src={AutographLogo} alt="Autograph Logo" /> */}
             <p className="mt-2 font-bold text-lg text-gray-600">
               Sign in to your account
             </p>
@@ -228,8 +213,7 @@ const Login = () => {
                     <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
+                      onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? (
                         <EyeOff className="h-5 w-5 text-gray-400" />
                       ) : (
@@ -249,16 +233,14 @@ const Login = () => {
                 <div className="text-sm">
                   <Link
                     to="/signup"
-                    className="font-medium text-btColour hover:text-blue-500"
-                  >
+                    className="font-medium text-btColour hover:text-blue-500">
                     Don't have an account?
                   </Link>
                 </div>
                 <div className="text-sm">
                   <Link
                     to="/ForgotPassword"
-                    className="font-medium text-btColour hover:text-blue-500"
-                  >
+                    className="font-medium text-btColour hover:text-blue-500">
                     Forgot your password?
                   </Link>
                 </div>
@@ -268,8 +250,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-NavClr hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-btColour transition-all duration-200 ease-in-out "
-                >
+                  className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-btColour transition-all duration-200 ease-in-out ">
                   {isLoading ? (
                     <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin" />
                   ) : (
@@ -308,19 +289,17 @@ const Login = () => {
           )}
         </div>
 
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-        >
-          <MuiAlert
-            onClose={handleCloseSnackbar}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </MuiAlert>
-        </Snackbar>
+        {/* Alert Component */}
+        {showAlert && (
+          <Alert
+            variant={alertConfig.variant}
+            show={showAlert}
+            onClose={() => setShowAlert(false)}
+            autoClose={true}
+            autoCloseTime={5000}>
+            <AlertDescription>{alertConfig.message}</AlertDescription>
+          </Alert>
+        )}
       </div>
     </GoogleOAuthProvider>
   );
@@ -347,8 +326,7 @@ const OtpVerification = ({ onSubmit }) => {
       <div>
         <label
           htmlFor="otp"
-          className="block text-sm font-medium text-gray-700"
-        >
+          className="block text-sm font-medium text-gray-700">
           Enter OTP
         </label>
         <div className="mt-1">
@@ -368,8 +346,7 @@ const OtpVerification = ({ onSubmit }) => {
       <div>
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-NavClr hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-btColour transition-all duration-200 ease-in-out "
-        >
+          className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-500 to-NavClr hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-btColour transition-all duration-200 ease-in-out ">
           Verify OTP
         </button>
       </div>
