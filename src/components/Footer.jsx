@@ -1,31 +1,39 @@
 import React from "react";
-import { useEffect } from "react";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
-import FooterBG from "../assets/images/footerImage.png";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const { userInfo } = useSelector((state) => state.auth);
+  const services = [
+    { name: "Business Directories", path: "https://edirect.ng/" },
+    { name: "Hotel Portal", path: "https://ebnbhotel.com/" },
+    { name: "Job Offers", path: "https://ejobs.com.ng/" },
+    { name: "Events & Venues", path: "https://evenue.ng" },
+    { name: "Shop & Stores", path: "https://estores.ng" },
+  ];
 
-  const { profile, loading, success, error } = useSelector(
-    (state) => state.profiles
-  );
-  const userId = userInfo?.user?._id;
-  const dashboardPath =
-    userInfo?.user?.role === "admin"
-      ? "/DashBoard/Admin_Dashboard"
-      : "/DashBoard/profile";
+  const policies = [
+    { name: "Terms and Conditions", path: "/privacypolicy" },
+    { name: "FAQs", path: "/" },
+    { name: "Contact Us", path: "/contactus" },
+  ];
+
+  const socialLinks = [
+    { icon: Facebook, url: "https://www.facebook.com/yourcompany" },
+    { icon: Instagram, url: "https://www.instagram.com/yourcompany" },
+    { icon: Linkedin, url: "https://www.linkedin.com/company/yourcompany" },
+    { icon: Twitter, url: "https://www.twitter.com/yourcompany" },
+  ];
+
   return (
     <footer className="relative text-white py-8 px-4 overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/src/assets/images/footerImage.png')", // Replace with your actual image path
+          backgroundImage: "url('/src/assets/images/footerImage.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundColor: "#8B0000", // Fallback color
+          backgroundColor: "#8B0000",
         }}
       />
 
@@ -44,58 +52,58 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <h2 className="text-xl font-bold mb-4">About</h2>
             <p className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et
-              massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien
-              fringilla, mattis ligula consectetur, ultrices mauris. Maecenas
-              vitae mattis tellus.
+              Innovating the digital transformation landscape in Africa and
+              beyond. Focused on delivering cutting-edge solutions to meet
+              today's tech demands.
             </p>
-            <button className="bg-yellow-300 text-red-700 font-bold py-2 px-4 hover:bg-transparent hover:text-white rounded hover:border-2 hover:border-yellow-300">
-              Learn More
-            </button>
+            <Link to="/aboutUs">
+              <button className="bg-yellow-300 text-red-700 font-bold py-2 px-4 rounded transition-all duration-300 hover:bg-transparent hover:text-white hover:border-2 hover:border-yellow-300">
+                Learn More
+              </button>
+            </Link>
           </div>
 
           <div>
-            <h2 className="text-xl font-bold mb-4">Services</h2>
+            <h2 className="text-xl font-bold mb-4">Other Services</h2>
             <ul className="space-y-2">
-              <li>Surveys</li>
-              <li>Polls</li>
-              <li>Job Interview</li>
-              {userInfo && (
-                <li>
-                  <NavLink
-                    to={dashboardPath}
-                    className=" hover:text-red-200 md:dark:hover:bg-transparent "
-                  >
-                    My DashBoard
-                  </NavLink>
+              {services.map((service, index) => (
+                <li key={index}>
+                  <Link
+                    to={service.path}
+                    className="hover:text-yellow-300 transition-colors duration-300">
+                    {service.name}
+                  </Link>
                 </li>
-              )}
+              ))}
             </ul>
           </div>
 
           <div>
             <h2 className="text-xl font-bold mb-4">Privacy Policy</h2>
             <ul className="space-y-2">
-              <li>Terms and conditions</li>
-              <li>FAQs</li>
-              <li>Contact Us</li>
+              {policies.map((policy, index) => (
+                <li key={index}>
+                  <Link
+                    to={policy.path}
+                    className="hover:text-yellow-300 transition-colors duration-300">
+                    {policy.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
 
             <h2 className="text-xl font-bold mt-6 mb-4">Follow us</h2>
             <div className="flex space-x-4">
-              {/* <Facebook className="w-6 h-6" /> */}
-              <Link target="blank" to={"https://www.facebook.com"}>
-                <Facebook className="w-6 h-6" />
-              </Link>
-              <Link target="blank" to={"https://www.facebook.com"}>
-                <Instagram className="w-6 h-6" />
-              </Link>
-              <Link target="blank" to={"https://www.facebook.com"}>
-                <Linkedin className="w-6 h-6" />
-              </Link>
-              <Link target="blank" to={"https://www.facebook.com"}>
-                <Twitter className="w-6 h-6" />
-              </Link>
+              {socialLinks.map((social, index) => (
+                <Link
+                  key={index}
+                  to={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-yellow-300 transition-colors duration-300">
+                  <social.icon className="w-6 h-6" />
+                </Link>
+              ))}
             </div>
           </div>
         </div>

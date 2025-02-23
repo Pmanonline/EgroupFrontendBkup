@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "../components/tools/Alert"; // Import your custom Alert component
-import { registerUser } from "../features/auth/authActions";
-import { resetSuccess, resetError } from "../features/auth/authSlice";
 import { Eye, EyeOff, Mail, User, Lock } from "lucide-react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import axios from "axios";
+import Cookies from "js-cookie";
+import backendURL from "../config";
+import edirectURL from "../config2";
 // Define the validation schema using yup
 const schema = yup.object().shape({
   username: yup.string().required("Username is required"),
@@ -21,17 +21,17 @@ const schema = yup.object().shape({
 });
 
 const Signup = () => {
-  const { loading, userInfo, error, success } = useSelector(
-    (state) => state.auth
-  );
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showDirectoryModal, setShowDirectoryModal] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
+    reset,
+    watch,
+    setError,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema), // Use yup for validation
   });
@@ -44,37 +44,79 @@ const Signup = () => {
     message: "",
   });
 
-  useEffect(() => {
-    if (success) {
-      setAlertConfig({
-        message: "Registered successfully. You can now log in.",
-        variant: "success",
+  const showAlertMessage = (message, variant = "default") => {
+    setAlertConfig({ message, variant });
+    setShowAlert(true);
+  };
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      // First Registration
+      const firstResponse = await fetch(`${backendURL}/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email.toLowerCase(),
+          password: data.password,
+          username: data.username,
+        }),
+        credentials: "omit",
       });
-      setShowAlert(true);
 
-      const timer = setTimeout(() => {
-        navigate("/login");
-        dispatch(resetSuccess());
-      }, 3000);
+      const firstData = await firstResponse.json();
 
-      return () => clearTimeout(timer);
+      if (!firstResponse.ok) {
+        showAlertMessage(
+          firstData.message || "Unable to complete registration.",
+          "destructive"
+        );
+        return;
+      }
+
+      // Store tokens and user info in cookies
+      Cookies.set("userToken", firstData.token, { expires: 30 });
+      Cookies.set("userInfo", JSON.stringify(firstData.user), { expires: 30 });
+
+      // Show main success message
+      showAlertMessage(
+        "Registered successfully! You can now log in.",
+        "success"
+      );
+
+      // Attempt second registration in background
+      try {
+        const secondResponse = await fetch(`${edirectURL}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: data.username,
+            email: data.email.toLowerCase(),
+            password: data.password,
+            password_confirmation: data.confirmPassword,
+            role: "user",
+          }),
+        });
+        console.log(secondResponse);
+
+        if (secondResponse.ok) {
+          setShowDirectoryModal(true);
+        }
+      } catch (error) {
+        console.error("Directory registration failed:", error);
+      }
+
+      // Navigate after delay
+      setTimeout(() => navigate("/login"), 3000);
+    } catch (error) {
+      showAlertMessage(
+        error.message || "An error occurred during registration.",
+        "destructive"
+      );
+    } finally {
+      setIsLoading(false);
     }
-  }, [success, navigate, dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      setAlertConfig({
-        message: error,
-        variant: "error",
-      });
-      setShowAlert(true);
-      dispatch(resetError());
-    }
-  }, [error, dispatch]);
-
-  const submitForm = (data) => {
-    data.email = data.email.toLowerCase();
-    dispatch(registerUser(data));
   };
 
   return (
@@ -86,7 +128,7 @@ const Signup = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(submitForm)} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="sr-only">
@@ -214,9 +256,9 @@ const Signup = () => {
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus :ring-btColour transition-all duration-200 ease-in-out ">
-              {loading ? (
+              {isLoading ? (
                 <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin" />
               ) : (
                 "Sign Up"
@@ -235,6 +277,24 @@ const Signup = () => {
             autoCloseTime={5000}>
             <AlertDescription>{alertConfig.message}</AlertDescription>
           </Alert>
+        )}
+
+        {/* Success Modal for Directory Registration */}
+        {showDirectoryModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full">
+              <h3 className="text-lg font-bold mb-4">Directory Registration</h3>
+              <p className="mb-4">
+                You've also been registered on our Directory platform. Please
+                check your email to verify your Directory account.
+              </p>
+              <button
+                onClick={() => setShowDirectoryModal(false)}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
+                Close
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

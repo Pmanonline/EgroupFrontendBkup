@@ -25,7 +25,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Alert, AlertDescription } from "../../components/tools/Alert";
-import LoaddingSpinner from "../../components/tools/LoadingSpinner";
+import Spinner from "../../components/tools/Spinner";
 import { ThumbUp, Edit, Delete, Send, MoreVert } from "@mui/icons-material";
 import {
   ThumbUpOutlined,
@@ -635,7 +635,7 @@ const GroupDiscussionPage = () => {
     </Box>
   );
 
-  if (loading) return <LoaddingSpinner />;
+  if (loading) return <Spinner />;
   if (error) return <Typography color="error">{error}</Typography>;
   if (!discussion) return <Typography>Discussion not found</Typography>;
 

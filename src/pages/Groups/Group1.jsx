@@ -332,7 +332,6 @@ const EGroup = () => {
             </span>
           </div>
           <div className="prose prose-invert max-w-none mb-6 text-lg mid:text-md">
-            {/* {groupData?.description} */}
             <div dangerouslySetInnerHTML={{ __html: groupData?.description }} />
           </div>
           <span className="inline-block bg-red-500/40 px-4 py-2 rounded-br-2xl rounded-tl-2xl text-sm font-medium">

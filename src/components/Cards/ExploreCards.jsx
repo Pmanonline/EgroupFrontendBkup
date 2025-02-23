@@ -11,6 +11,12 @@ import {
   Alert,
 } from "@mui/material";
 
+// Import images
+import exploreImage1 from "/src/assets/images/exploreImage.png";
+import exploreImage2 from "/src/assets/images/exploreImage2.png";
+import exploreImage3 from "/src/assets/images/exploreImage3.png";
+import exploreImage4 from "/src/assets/images/exploreImage4.png";
+
 const VirginCard = ({
   image,
   title,
@@ -33,7 +39,6 @@ const VirginCard = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send the email to your backend
     console.log("Email submitted:", email);
     setOpen(false);
     setSnackbarOpen(true);
@@ -56,18 +61,16 @@ const VirginCard = ({
         {isNewsletter ? (
           <button
             onClick={handleClickOpen}
-            href={link}
-            className="inline-flex items-center text-red-600 hover:text-red-800"
-          >
+            className="inline-flex items-center text-red-600 hover:text-red-800">
             {ctaText}
             <ArrowRight className="w-4 h-4 ml-1" />
           </button>
         ) : (
           <a
-            target="blank"
+            target="_blank"
+            rel="noopener noreferrer"
             href={link}
-            className="inline-flex items-center text-red-600 hover:text-red-800"
-          >
+            className="inline-flex items-center text-red-600 hover:text-red-800">
             {ctaText}
             <ArrowRight className="w-4 h-4 ml-1" />
           </a>
@@ -105,13 +108,11 @@ const VirginCard = ({
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
+        onClose={handleSnackbarClose}>
         <Alert
           onClose={handleSnackbarClose}
           severity="success"
-          sx={{ width: "100%" }}
-        >
+          sx={{ width: "100%" }}>
           Successfully signed up for the newsletter!
         </Alert>
       </Snackbar>
@@ -122,7 +123,7 @@ const VirginCard = ({
 const ExploreCards = () => {
   const cards = [
     {
-      image: "/src/assets/images/exploreImage4.png",
+      image: exploreImage4,
       title: "Essential newsletter",
       description:
         "Sign up to the Virgin.com newsletter for the latest from Virgin companies and Richard the Virgin Blog.",
@@ -131,7 +132,7 @@ const ExploreCards = () => {
       isNewsletter: true,
     },
     {
-      image: "/src/assets/images/exploreImage3.png",
+      image: exploreImage3,
       title: "Looking to start your own business?",
       description:
         "In 2013, Virgin StartUp was founded to support the next generation of founders who are looking to do the same.",
@@ -139,7 +140,7 @@ const ExploreCards = () => {
       link: "/post/looking-to-start-your-own-business",
     },
     {
-      image: "/src/assets/images/exploreImage2.png",
+      image: exploreImage2,
       title: "Our foundation.",
       description:
         "Virgin Unite is the independent entrepreneurial foundation of the Virgin Group and the Branson family.",
@@ -147,12 +148,12 @@ const ExploreCards = () => {
       link: "/post/our-foundation",
     },
     {
-      image: "/src/assets/images/exploreImage.png",
+      image: exploreImage1,
       title: "Our timeline.",
       description:
         "Our story begins in 1967 when Richard launched Student magazine, aged 15.",
       ctaText: "Explore timeline",
-      link: "post/our-timeline",
+      link: "/post/our-timeline",
     },
   ];
 

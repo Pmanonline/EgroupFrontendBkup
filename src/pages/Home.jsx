@@ -95,36 +95,31 @@ const Home = () => {
             <a
               href="#"
               target="blank"
-              className="text-gray-800  hover:text-red-500"
-            >
+              className="text-gray-800  hover:text-red-500">
               <Facebook size={24} />
             </a>
             <a
               href="#"
               target="blank"
-              className="text-gray-800  hover:text-red-500"
-            >
+              className="text-gray-800  hover:text-red-500">
               <Twitter size={24} />
             </a>
             <a
               href="#"
               target="blank"
-              className="text-gray-800  hover:text-red-500"
-            >
+              className="text-gray-800  hover:text-red-500">
               <Instagram size={24} />
             </a>
             <a
               href="#"
               target="blank"
-              className="text-gray-800  hover:text-red-500"
-            >
+              className="text-gray-800  hover:text-red-500">
               <Youtube size={24} />
             </a>
             <a
               href="#"
               target="blank"
-              className="text-gray-800  hover:text-red-500"
-            >
+              className="text-gray-800  hover:text-red-500">
               <Linkedin size={24} />
             </a>
           </div>
@@ -161,8 +156,7 @@ const Home = () => {
         <Link
           target="blank
         "
-          to={"https://theprideofnigeria.ng/"}
-        >
+          to={"https://theprideofnigeria.ng/"}>
           <div className="w-full sm:max-w-[35rem] mid:px-5 mx-auto mt-5 my-[4rem]">
             <div className="bg-[#0D5C3B] hover:scale-95 text-white text-center py-6 px-8 rounded-md ">
               <p className="text-lg">Pride of Nigeria</p>
@@ -180,24 +174,13 @@ const Home = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          {/* <div className="md:w-2/5 flex flex-col justify-center bg-gray-50 p-3">
-            <p className="text-black mb-6 px-3">
-              Lorem ipsum dolor sit amet consectetur. Integer augue at vitae sed
-              integer porttitor sed ultrices ornare.
-            </p>
-            <div className="space-y-2 mb-6 px-3">
-              <div className="border-b mt-3 border-gray-500 w-full mx-auto mb-5"></div>
-              <div className="border-b mt-3 border-gray-500 w-full mx-auto"></div>
-            </div>
-            <button className="text-black font-bold text-lg py-2 px-4 rounded-md w-full md:w-auto">
-              Get Started
-            </button>
-            <div className="border-b mt-3 border-gray-500 w-[40%] mx-auto"></div>
-          </div> */}
+
           <div className="md:w-2/5 flex flex-col justify-center bg-gray-50 p-3">
             <p className="text-black mb-6 px-3">
-              Lorem ipsum dolor sit amet consectetur. Integer augue at vitae sed
-              integer porttitor sed ultrices ornare.
+              Discover, plan, and book the perfect venue for your events with
+              ease. Whether it's a corporate gathering, wedding, or social
+              celebration, Evenue.ng connects you with premium locations
+              tailored to your needs.
             </p>
             <div className="space-y-2 mb-6 px-3">
               <div className="border-b mt-3 border-gray-500 w-full mx-auto mb-5"></div>
@@ -208,8 +191,7 @@ const Home = () => {
             <Link
               target="blank"
               className="text-center"
-              to="https://evenue.ng/"
-            >
+              to="https://evenue.ng/">
               <button className="text-black font-bold text-lg py-2 px-4 rounded-md w-full md:w-auto  hover:bg-NavClr hover:text-white hover:scale-105 transition-transform duration-300 ease-in-out">
                 Get Started
               </button>
@@ -228,7 +210,8 @@ const Home = () => {
       </section>
       {/* E-business */}
       <section className="  py-[4rem]">
-        <div className="w-full h-[23rem] mid:h-[35rem] bg-gradient-to-r from-[#341f1f] to-[#803d3d] shadow-md">
+        {/* <div className="w-full h-[23rem] mid:h-[35rem] bg-gradient-to-r from-[#341f1f] to-[#803d3d] shadow-md"> */}
+        <div className="w-full h-[23rem] mid:h-[35rem] bg-[#5a2a2a] shadow-md">
           <div className="max-w-6xl mx-auto">
             <h1 className="text-2xl font-bold p-4 border-b text-white">
               E- Business

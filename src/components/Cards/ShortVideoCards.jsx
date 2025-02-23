@@ -99,8 +99,7 @@ const VideoCard = ({ videoSrc, views, thumbnail, isPlaying, onPlay }) => {
     <div
       className={`relative overflow-hidden rounded-lg group transition-all ${
         isPlaying ? "h-80 md:h-96" : "h-64 md:h-80" // Increased height
-      }`}
-    >
+      }`}>
       {!isPlaying ? (
         <img
           src={thumbnail}
@@ -118,8 +117,7 @@ const VideoCard = ({ videoSrc, views, thumbnail, isPlaying, onPlay }) => {
       {!isPlaying && (
         <div
           onClick={onPlay}
-          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-        >
+          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
           <Play className="text-white w-12 h-12" />
         </div>
       )}

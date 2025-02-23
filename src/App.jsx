@@ -9,14 +9,13 @@ import Books from "./pages/Books";
 import Group1 from "./pages/Groups/Group1";
 import DiscussionPage from "./pages/Groups/Discussion";
 import Conferences from "./pages/Conference";
-// import Webinar from "./pages/Webinars";
-// import Solutions from "./pages/Solution";
 import Contact from "./pages/Contactus";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RegisterAdmin from "../src/pages/RegisterAdmin";
 import Signup from "../src/pages/RegisterUser";
 import ForgotPassword from "../src/pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
-
+import NotFound from "./pages/404page";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Blog from "./pages/Blog";
@@ -56,6 +55,7 @@ const App = () => {
               <Footer />
             </>
           }>
+          <Route path="*" element={<NotFound />} />
           <Route path="/" element={<Home />} />
           <Route path="/aboutUs" element={<AboutUs />} />
           <Route path="/AllServiceCards" element={<AllServiceCards />} />
@@ -70,6 +70,7 @@ const App = () => {
           <Route path="/conferences" element={<Conferences />} />
           {/* <Route path="/solutions" element={<Solutions />} /> */}
           <Route path="/contactus" element={<Contact />} />
+          <Route path="/privacypolicy" element={<PrivacyPolicy />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/RegisterAdmin" element={<RegisterAdmin />} />
           <Route path="/login" element={<Login />} />

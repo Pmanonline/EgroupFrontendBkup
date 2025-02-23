@@ -13,16 +13,20 @@ import {
   MenuSquare,
   Menu,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../features/auth/authSlice";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
-    // Your logout logic here
-    navigate("/");
+    console.log("button fired");
+    dispatch(logoutUser()); // Dispatch the logout action
+    navigate("/"); // Redirect to home after logout
   };
 
   const menuItems = [
